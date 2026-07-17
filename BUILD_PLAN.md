@@ -173,19 +173,20 @@ Every button works on the **current selection** in the editor via the Core forma
 - [x] 1.4 All Phase 1 tests green (22 tests). **Commit.**
 
 ### Phase 2 — Core: Editing engine (TDD — this powers the whole toolbox)
-- [ ] 2.1 Define `TextSelection` and `EditResult` records.
-- [ ] 2.2 `InlineFormatter.Toggle(selection, marker)` for `**`, `*`, `~~`, `` ` ``, `==`.
+- [x] 2.1 Define `TextSelection` and `EditResult` records.
+- [x] 2.2 `InlineFormatter.Toggle(selection, marker)` for `**`, `*`, `~~`, `` ` ``, `==`.
       Handle: empty selection, already-wrapped selection (unwrap), selection with surrounding
       whitespace (trim markers inside), multi-word selection.
-- [ ] 2.3 `BlockFormatter`: `SetHeading(selection, level 0–6)` (0 = remove), `ToggleBlockquote`,
-      `ToggleCodeFence(language)`, `InsertHorizontalRule`.
-- [ ] 2.4 `ListFormatter.ToggleList(selection, ListKind.Bullet|Numbered|Task)` across all selected
+- [x] 2.3 `BlockFormatter`: `SetHeading(selection, level 0–6)` (0 = remove), `ToggleBlockquote`,
+      `ToggleCodeFence(language)`, `InsertHorizontalRule` (with setext-heading protection).
+- [x] 2.4 `ListFormatter.ToggleList(selection, ListKind.Bullet|Numbered|Task)` across all selected
       lines; renumber numbered lists; convert between kinds.
-- [ ] 2.5 `TableBuilder.Create(rows, cols, hasHeader)` → aligned pipe table;
+- [x] 2.5 `TableBuilder.Create(rows, cols, hasHeader)` → aligned pipe table;
       `InsertRow/InsertColumn(tableText, index)` for later table editing.
-- [ ] 2.6 `DocumentStatistics.Compute(text)` → words, characters, lines (ignore Markdown syntax
-      markers for the word count).
-- [ ] 2.7 All Phase 2 tests green. **Commit.**
+- [x] 2.6 `DocumentStatistics.Compute(text)` → words, characters, lines (ignore Markdown syntax
+      markers for the word count). Also implemented `DocumentState`, `FileService`,
+      `RecentFilesService` (were listed under §3 structure).
+- [x] 2.7 All Phase 2 tests green (72 tests total). **Commit.**
 
 ### Phase 3 — App shell: window, editor, preview
 - [ ] 3.1 `MainWindow` layout: menu-less ribbon area (TabControl: Home/Insert/View/Export) on top,
