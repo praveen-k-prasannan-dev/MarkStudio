@@ -9,6 +9,9 @@ public sealed class DocumentState
 
     public string Title => FilePath is null ? "Untitled" : Path.GetFileName(FilePath);
 
+    /// <summary>Flags unsaved changes without the cost of syncing the full text (used per keystroke).</summary>
+    public void MarkDirty() => IsDirty = true;
+
     public void SetText(string text)
     {
         ArgumentNullException.ThrowIfNull(text);

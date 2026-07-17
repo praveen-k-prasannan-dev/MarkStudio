@@ -5,17 +5,22 @@ namespace MarkdownEditor.Core.Markdown;
 /// <summary>Wraps a rendered HTML body fragment into a complete standalone page.</summary>
 public static class HtmlDocumentBuilder
 {
-    public static string BuildPage(string bodyHtml, string cssText, string title)
+    public static string BuildPage(string bodyHtml, string cssText, string title, string? baseHref = null)
     {
         ArgumentNullException.ThrowIfNull(bodyHtml);
         ArgumentNullException.ThrowIfNull(cssText);
         ArgumentNullException.ThrowIfNull(title);
+
+        string baseTag = baseHref is null
+            ? ""
+            : $"<base href=\"{WebUtility.HtmlEncode(baseHref)}\" />";
 
         return $"""
             <!DOCTYPE html>
             <html>
             <head>
             <meta charset="utf-8" />
+            {baseTag}
             <title>{WebUtility.HtmlEncode(title)}</title>
             <style>
             {cssText}

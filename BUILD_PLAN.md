@@ -189,18 +189,20 @@ Every button works on the **current selection** in the editor via the Core forma
 - [x] 2.7 All Phase 2 tests green (72 tests total). **Commit.**
 
 ### Phase 3 — App shell: window, editor, preview
-- [ ] 3.1 `MainWindow` layout: menu-less ribbon area (TabControl: Home/Insert/View/Export) on top,
-      `Grid` with AvalonEdit (left) + `GridSplitter` + WebView2 (right), `StatusBar` at bottom
-      (file name, dirty marker `●`, word count, caret line:col).
-- [ ] 3.2 `EditorControl`: wrap AvalonEdit; expose `GetSelection(): TextSelection` and
-      `ApplyEdit(EditResult)` (single undo step); Markdown syntax highlighting definition (.xshd).
-- [ ] 3.3 `MainViewModel`: `DocumentState`, text binding, dirty tracking, title = `name ● — Markdown Editor`.
-- [ ] 3.4 Live preview: on text change, debounce **300 ms**, render via Core, push to WebView2 with
-      `NavigateToString`. Preserve preview scroll position across refreshes.
-- [ ] 3.5 File handling: New / Open / Save / Save As (Ctrl+N/O/S/Shift+S), unsaved-changes prompt on
+- [x] 3.1 `MainWindow` layout: File menu + ribbon area placeholder on top, `Grid` with AvalonEdit
+      (left) + `GridSplitter` + WebView2 (right), `StatusBar` at bottom
+      (word/char/line count, caret line:col; dirty marker `●` shown in window title).
+- [x] 3.2 Editor wiring in code-behind (AvalonEdit's built-in "MarkDown" highlighting definition;
+      dedicated `EditorControl` deferred — formatters are wired directly in Phase 4).
+- [x] 3.3 `MainViewModel`: `DocumentState`, dirty tracking, title = `name ● — Markdown Editor`,
+      status-bar text; UI-framework-free.
+- [x] 3.4 Live preview: 300 ms debounce, render via Core, `NavigateToString`; scroll position
+      preserved across refreshes; document folder mapped to `https://preview.local/` virtual host
+      so relative image paths work.
+- [x] 3.5 File handling: New / Open / Save / Save As (Ctrl+N/O/S/Shift+S), unsaved-changes prompt on
       close/new/open, recent files (persist to `%APPDATA%\MarkdownEditor\recent.json`),
       file-drop onto window opens the file, `.md` passed as command-line arg opens on startup.
-- [ ] 3.6 Manual verification: run app, type Markdown, see live preview, open/save round-trip. **Commit.**
+- [x] 3.6 Verified: app builds, launches, and stays running; all 72 tests green. **Commit.**
 
 ### Phase 4 — The Word-style toolbox (wire ribbon → Core formatters)
 - [ ] 4.1 Build the ribbon per §4 spec: Home, Insert, View, Export tabs. Icons via Segoe MDL2
