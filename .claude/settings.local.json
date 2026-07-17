@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(git init)",
+      "PowerShell(dotnet new gitignore)",
+      "PowerShell(dotnet new sln -n MarkdownEditor)",
+      "PowerShell(dotnet new classlib -n MarkdownEditor.Core -o src/MarkdownEditor.Core -f net8.0)",
+      "PowerShell(dotnet new wpf -n MarkdownEditor.App -o src/MarkdownEditor.App -f net8.0)",
+      "PowerShell(dotnet new xunit -n MarkdownEditor.Core.Tests -o tests/MarkdownEditor.Core.Tests -f net8.0)",
+      "PowerShell(dotnet sln add src/MarkdownEditor.Core src/MarkdownEditor.App tests/MarkdownEditor.Core.Tests)",
+      "PowerShell(dotnet add src/MarkdownEditor.App reference src/MarkdownEditor.Core)",
+      "PowerShell(dotnet add tests/MarkdownEditor.Core.Tests reference src/MarkdownEditor.Core)",
+      "PowerShell(dotnet add src/MarkdownEditor.Core package Markdig)",
+      "PowerShell(dotnet add src/MarkdownEditor.App package CommunityToolkit.Mvvm)",
+      "PowerShell(dotnet add src/MarkdownEditor.App package AvalonEdit)",
+      "PowerShell(dotnet add src/MarkdownEditor.App package Microsoft.Web.WebView2)",
+      "PowerShell(dotnet add tests/MarkdownEditor.Core.Tests package FluentAssertions)",
+      "PowerShell(dotnet add tests/MarkdownEditor.Core.Tests package FluentAssertions --version 7.2.2)",
+      "PowerShell(git add -A)"
+    ]
+  }
+}
