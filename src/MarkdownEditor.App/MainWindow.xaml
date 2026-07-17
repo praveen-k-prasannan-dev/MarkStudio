@@ -5,6 +5,7 @@
         xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="{Binding WindowTitle}"
+        Icon="pack://application:,,,/Assets/app.ico"
         Height="820" Width="1280"
         WindowStartupLocation="CenterScreen"
         AllowDrop="True"

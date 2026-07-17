@@ -220,7 +220,7 @@ Every button works on the **current selection** in the editor via the Core forma
       editor font size, outline panel (heading regex; click navigates editor).
 - [x] 4.7 Synchronized scrolling: proportional editor→preview scroll mapping (fraction of scroll
       height; the `data-line` element mapping remains a future enhancement).
-- [ ] 4.8 Manual verification of **every** toolbox button (user pass pending). **Commit.**
+- [x] 4.8 Manual verification of **every** toolbox button (verified by user, 2026-07-17). **Commit.**
 
 ### Phase 5 — Export: PDF, HTML, print
 - [x] 5.1 PDF export reuses the preview WebView2 (simpler than an off-screen instance): re-render
@@ -230,8 +230,8 @@ Every button works on the **current selection** in the editor via the Core forma
       include background graphics toggle; remembers last-used settings (per session).
 - [x] 5.3 Export to HTML: write the same full page (inline CSS) to a chosen `.html` file.
 - [x] 5.4 Print: `CoreWebView2.ShowPrintUI()` on the preview (Ctrl+P).
-- [ ] 5.5 Verify: export a document containing headings, a table, a task list, a code block, and an
-      image; open the PDF and confirm fidelity (user pass pending). **Commit.**
+- [x] 5.5 Verify: export a document containing headings, a table, a task list, a code block, and an
+      image; open the PDF and confirm fidelity (verified by user, 2026-07-17). **Commit.**
 
 ### Phase 6 — Polish & hardening
 - [x] 6.1 Auto-save recovery draft every 60 s to `%APPDATA%\MarkdownEditor\autosave\`; offer recovery
@@ -245,8 +245,20 @@ Every button works on the **current selection** in the editor via the Core forma
       errors → non-crashing dialogs.
 - [x] 6.6 Version info (1.0.0) + About dialog. (Custom app icon not added — needs a designed .ico;
       future enhancement.)
-- [ ] 6.7 Full regression pass: all 72 tests green; automated smoke tests pass (launch, open
-      SAMPLE.md). Manual checklist (§7) pending user pass. **Commit.**
+- [x] 6.7 Full regression pass: all 72 tests green; automated smoke tests pass (launch, open
+      SAMPLE.md); manual checklist (§7) verified by user, 2026-07-17. **Commit.**
+
+### Phase 7 — Branding & splash screen (added 2026-07-17)
+- [x] 7.1 App renamed **MarkStudio** (window titles, About dialog, assembly Product/Title).
+- [x] 7.2 Generated multi-size `Assets\app.ico` (violet gradient rounded square, white "M";
+      script: scratchpad `make-icon.ps1`) — used as the exe icon (`ApplicationIcon`), the
+      main-window/title-bar icon, and on the splash screen.
+- [x] 7.3 Visual Studio-style splash screen (`Views/SplashWindow`): borderless dark-violet
+      gradient card with icon, app name, version, "Developed by Praveen K P", tech credits
+      (.NET 8/WPF/C#, Markdig, AvalonEdit, WebView2, xUnit, CommunityToolkit.Mvvm, and
+      Claude Code — Anthropic's Claude AI), a progress bar, and a **Skip (60s)** countdown
+      button. Shows 60 seconds minimum unless skipped; then opens the main window
+      (`App.OnStartup` with explicit shutdown-mode handover).
 
 ---
 
@@ -305,16 +317,16 @@ Every button works on the **current selection** in the editor via the Core forma
 
 ## 7. Manual UI Verification Checklist (run after Phases 4–6)
 
-- [ ] Every ribbon button produces correct Markdown and the preview updates.
-- [ ] Every keyboard shortcut works and matches its tooltip.
-- [ ] Bold toggle works: apply → appears; apply again → removed.
-- [ ] Table grid picker inserts exactly the hovered dimensions.
-- [ ] Open → edit → Save round-trip preserves content byte-for-byte apart from edits (UTF-8).
-- [ ] Closing with unsaved changes prompts; Cancel really cancels.
-- [ ] Split/editor-only/preview-only modes; sync-scroll follows caret.
-- [ ] PDF export of the sample document (headings, table, task list, code, image) looks correct.
-- [ ] Dark theme preview readable; theme choice persists across restart.
-- [ ] App does not freeze while typing rapidly in a large (1 MB) document.
+- [x] Every ribbon button produces correct Markdown and the preview updates.
+- [x] Every keyboard shortcut works and matches its tooltip.
+- [x] Bold toggle works: apply → appears; apply again → removed.
+- [x] Table grid picker inserts exactly the hovered dimensions.
+- [x] Open → edit → Save round-trip preserves content byte-for-byte apart from edits (UTF-8).
+- [x] Closing with unsaved changes prompts; Cancel really cancels.
+- [x] Split/editor-only/preview-only modes; sync-scroll follows caret.
+- [x] PDF export of the sample document (headings, table, task list, code, image) looks correct.
+- [x] Dark theme preview readable; theme choice persists across restart.
+- [x] App does not freeze while typing rapidly in a large (1 MB) document.
 
 ---
 

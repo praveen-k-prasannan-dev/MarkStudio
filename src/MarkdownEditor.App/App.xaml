@@ -1,9 +1,7 @@
-﻿<Application x:Class="MarkdownEditor.App.App"
+<Application x:Class="MarkdownEditor.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MarkdownEditor.App"
-             StartupUri="MainWindow.xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Application.Resources>
-         
+
     </Application.Resources>
 </Application>

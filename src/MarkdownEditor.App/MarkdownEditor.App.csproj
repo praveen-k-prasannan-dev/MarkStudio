@@ -17,15 +17,17 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <Version>1.0.0</Version>
-    <Product>Markdown Editor</Product>
-    <AssemblyTitle>Markdown Editor</AssemblyTitle>
-    <Description>Markdown document viewer and editor with a Word-style toolbox and PDF export.</Description>
+    <Product>MarkStudio</Product>
+    <AssemblyTitle>MarkStudio</AssemblyTitle>
+    <Description>MarkStudio — Markdown document viewer and editor with a Word-style toolbox and PDF export.</Description>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="Assets\**\*.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Assets\app.ico" />
   </ItemGroup>
 
 </Project>

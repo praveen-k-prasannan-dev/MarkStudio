@@ -1,0 +1,85 @@
+<Window x:Class="MarkdownEditor.App.Views.SplashWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MarkStudio"
+        Icon="pack://application:,,,/Assets/app.ico"
+        Width="640" Height="420"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True">
+
+    <Border CornerRadius="10" BorderThickness="1" BorderBrush="#FF6D28D9">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FF1E1B2E" Offset="0" />
+                <GradientStop Color="#FF2E1065" Offset="0.55" />
+                <GradientStop Color="#FF4C1D95" Offset="1" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.55" />
+        </Border.Effect>
+
+        <Grid Margin="36,32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Icon + app name -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Image Source="pack://application:,,,/Assets/app.ico" Width="72" Height="72"
+                       VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                <StackPanel VerticalAlignment="Center" Margin="20,0,0,0">
+                    <TextBlock Text="MarkStudio" FontSize="44" FontWeight="SemiBold"
+                               Foreground="White" FontFamily="Segoe UI" />
+                    <TextBlock x:Name="VersionText" Text="Version 1.0"
+                               FontSize="15" Foreground="#FFC4B5FD" Margin="2,2,0,0" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Credits -->
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="4,18,0,0">
+                <TextBlock Text="Markdown editing, live preview, and PDF export — with a toolbox like Word."
+                           FontSize="14" Foreground="#FFE9D5FF" TextWrapping="Wrap" Margin="0,0,0,18" />
+
+                <TextBlock FontSize="14" Foreground="White" Margin="0,0,0,10">
+                    <Run Text="Developed by" Foreground="#FFC4B5FD" />
+                    <Run Text="Praveen K P" FontWeight="SemiBold" FontSize="16" />
+                </TextBlock>
+
+                <TextBlock FontSize="12.5" Foreground="#FFD8CCF1" TextWrapping="Wrap" LineHeight="20">
+                    <Run Text="Built with Microsoft .NET 8 · WPF · C#" /><LineBreak />
+                    <Run Text="Markdig · AvalonEdit · Microsoft Edge WebView2 · xUnit · CommunityToolkit.Mvvm" /><LineBreak />
+                    <Run Text="Developed with Claude Code — Anthropic's Claude AI" FontStyle="Italic" />
+                </TextBlock>
+            </StackPanel>
+
+            <!-- Loading bar -->
+            <ProgressBar Grid.Row="2" x:Name="LoadingBar" Height="4" Margin="0,0,0,16"
+                         Minimum="0" Maximum="60" Value="0"
+                         Background="#FF3B2A63" Foreground="#FFA78BFA" BorderThickness="0" />
+
+            <!-- Bottom row: copyright + skip -->
+            <Grid Grid.Row="3">
+                <TextBlock Text="© 2026 Praveen K P" FontSize="11.5" Foreground="#FF9F8FCF"
+                           VerticalAlignment="Center" />
+                <Button x:Name="SkipButton" Content="Skip (60s)" Click="Skip_Click"
+                        HorizontalAlignment="Right" Padding="16,6"
+                        FontSize="13" Cursor="Hand"
+                        Foreground="White" Background="#33FFFFFF" BorderBrush="#FF8B5CF6" BorderThickness="1">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6" />
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
