@@ -48,6 +48,7 @@ public partial class MainWindow : Window
             _vm.UpdateCaret(Editor.TextArea.Caret.Line, Editor.TextArea.Caret.Column);
 
         InitializeRibbon();
+        ApplySettings();
 
         Loaded += MainWindow_Loaded;
         Closing += MainWindow_Closing;
@@ -63,6 +64,8 @@ public partial class MainWindow : Window
         else
             await RefreshPreviewAsync();
 
+        OfferRecovery();
+        StartAutosave();
         Editor.Focus();
     }
 
@@ -226,6 +229,7 @@ public partial class MainWindow : Window
         try
         {
             _vm.Save(path, Editor.Text);
+            DeleteAutosave(); // the draft is no longer newer than the file on disk
             _ = RefreshPreviewAsync(); // re-render: the base href may have changed with the folder
             return true;
         }
@@ -265,7 +269,12 @@ public partial class MainWindow : Window
     private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
     {
         if (!ConfirmDiscardChanges())
+        {
             e.Cancel = true;
+            return;
+        }
+        DeleteAutosave();
+        SaveSettings();
     }
 
     // ---------- Recent files ----------
@@ -304,6 +313,12 @@ public partial class MainWindow : Window
     {
         if (e.Data.GetData(DataFormats.FileDrop) is not string[] files || files.Length == 0)
             return;
+
+        if (IsImageFile(files[0]))
+        {
+            InsertDroppedImage(files[0]);
+            return;
+        }
         if (ConfirmDiscardChanges())
             OpenFile(files[0]);
     }

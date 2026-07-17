@@ -234,16 +234,19 @@ Every button works on the **current selection** in the editor via the Core forma
       image; open the PDF and confirm fidelity (user pass pending). **Commit.**
 
 ### Phase 6 — Polish & hardening
-- [ ] 6.1 Auto-save recovery draft every 60 s to `%APPDATA%\MarkdownEditor\autosave\`; offer recovery
-      after a crash.
-- [ ] 6.2 Settings persistence (`settings.json`): theme, view mode, font size, window size/position.
-- [ ] 6.3 Word count in status bar updates live (Core `DocumentStatistics`).
-- [ ] 6.4 Drag-and-drop an image file into the editor → copies it to `./assets/` next to the `.md`
-      and inserts `![name](assets/name.png)`.
-- [ ] 6.5 Error handling: WebView2 runtime missing → friendly message with download link; file I/O
+- [x] 6.1 Auto-save recovery draft every 60 s to `%APPDATA%\MarkdownEditor\autosave\`; offer recovery
+      after a crash; draft deleted on save/clean exit.
+- [x] 6.2 Settings persistence (`settings.json`): theme, view mode, sync scroll, outline, font size,
+      window size/maximized state.
+- [x] 6.3 Word count in status bar updates live (Core `DocumentStatistics`).
+- [x] 6.4 Drag-and-drop an image file into the editor → copies it to `./assets/` next to the `.md`
+      and inserts `![name](assets/name.png)` (absolute path when the document is unsaved).
+- [x] 6.5 Error handling: WebView2 runtime missing → friendly message with download link; file I/O
       errors → non-crashing dialogs.
-- [ ] 6.6 App icon, version info, About dialog.
-- [ ] 6.7 Full regression pass: all tests green + manual checklist (§7). **Commit.**
+- [x] 6.6 Version info (1.0.0) + About dialog. (Custom app icon not added — needs a designed .ico;
+      future enhancement.)
+- [ ] 6.7 Full regression pass: all 72 tests green; automated smoke tests pass (launch, open
+      SAMPLE.md). Manual checklist (§7) pending user pass. **Commit.**
 
 ---
 

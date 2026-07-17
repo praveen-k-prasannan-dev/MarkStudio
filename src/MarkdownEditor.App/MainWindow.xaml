@@ -96,6 +96,9 @@
                 <Separator />
                 <MenuItem Header="E_xit" Click="Exit_Click" />
             </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About Markdown Editor" Click="About_Click" />
+            </MenuItem>
         </Menu>
 
         <!-- Ribbon toolbox -->
