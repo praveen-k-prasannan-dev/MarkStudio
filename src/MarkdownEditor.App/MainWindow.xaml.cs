@@ -97,6 +97,14 @@ public partial class MainWindow : Window
                 "Download it from: https://developer.microsoft.com/microsoft-edge/webview2/",
                 "WebView2 Runtime missing", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
+        catch (Exception ex)
+        {
+            // The app must stay usable as a plain editor even if the preview engine fails.
+            Services.AppLog.Write($"WebView2 initialization failed: {ex}");
+            MessageBox.Show(this,
+                $"The preview engine could not be started, so the preview pane is disabled:\n{ex.Message}",
+                "Preview unavailable", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
     }
 
     // ---------- Preview ----------

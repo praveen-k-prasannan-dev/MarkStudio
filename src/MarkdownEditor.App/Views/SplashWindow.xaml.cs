@@ -37,17 +37,18 @@ public partial class SplashWindow : Window
         SkipButton.Content = $"Skip ({Math.Max(0, DisplaySeconds - _elapsed)}s)";
 
         if (_elapsed >= DisplaySeconds)
-            Complete();
+            Complete("60s timer elapsed");
     }
 
-    private void Skip_Click(object sender, RoutedEventArgs e) => Complete();
+    private void Skip_Click(object sender, RoutedEventArgs e) => Complete("skip button");
 
-    private void Complete()
+    private void Complete(string reason)
     {
         if (_completed)
             return;
         _completed = true;
         _timer.Stop();
+        Services.AppLog.Write($"Splash complete after {_elapsed}s (reason: {reason})");
         Completed?.Invoke(this, EventArgs.Empty);
     }
 }
