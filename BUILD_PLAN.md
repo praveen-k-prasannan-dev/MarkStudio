@@ -164,13 +164,13 @@ Every button works on the **current selection** in the editor via the Core forma
     project-level `nuget.config` pins restore to nuget.org (corporate feed was returning 503s).
 
 ### Phase 1 — Core: Markdown rendering (TDD)
-- [ ] 1.1 Write `MarkdownRendererTests` first (see §6 test list), then implement `MarkdownRenderer`:
-      Markdig pipeline with `UseAdvancedExtensions()` + `UseEmphasisExtras()` (for `==highlight==`)
-      + `UseTaskLists()` + pipe tables; method `string ToHtml(string markdown)`.
-- [ ] 1.2 Implement `HtmlDocumentBuilder.BuildPage(bodyHtml, cssText, title)` → full `<html>` document.
-- [ ] 1.3 Create `preview-light.css` (GitHub-like: fonts, table borders, code blocks, blockquote bar)
-      and `preview-dark.css`. Embed as resources or copy-to-output.
-- [ ] 1.4 All Phase 1 tests green. **Commit.**
+- [x] 1.1 Write `MarkdownRendererTests` first (see §6 test list), then implement `MarkdownRenderer`:
+      Markdig pipeline with `UseAdvancedExtensions()` (already includes emphasis extras, task
+      lists, and pipe tables); method `string ToHtml(string markdown)`.
+- [x] 1.2 Implement `HtmlDocumentBuilder.BuildPage(bodyHtml, cssText, title)` → full `<html>` document.
+- [x] 1.3 Create `preview-light.css` (GitHub-like: fonts, table borders, code blocks, blockquote bar)
+      and `preview-dark.css`. Copied to output via csproj `Content` item.
+- [x] 1.4 All Phase 1 tests green (22 tests). **Commit.**
 
 ### Phase 2 — Core: Editing engine (TDD — this powers the whole toolbox)
 - [ ] 2.1 Define `TextSelection` and `EditResult` records.
