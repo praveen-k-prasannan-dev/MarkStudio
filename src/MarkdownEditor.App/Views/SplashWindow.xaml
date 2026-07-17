@@ -33,7 +33,7 @@
 
             <!-- Icon + app name -->
             <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <Image Source="pack://application:,,,/Assets/app.ico" Width="72" Height="72"
+                <Image Source="pack://application:,,,/Assets/splash-icon.png" Width="80" Height="80"
                        VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
                 <StackPanel VerticalAlignment="Center" Margin="20,0,0,0">
                     <TextBlock Text="MarkStudio" FontSize="44" FontWeight="SemiBold"

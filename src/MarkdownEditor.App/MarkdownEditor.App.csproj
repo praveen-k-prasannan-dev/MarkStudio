@@ -28,6 +28,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Assets\app.ico" />
+    <Resource Include="Assets\splash-icon.png" />
   </ItemGroup>
 
 </Project>
