@@ -47,6 +47,8 @@ public partial class MainWindow : Window
         Editor.TextArea.Caret.PositionChanged += (_, _) =>
             _vm.UpdateCaret(Editor.TextArea.Caret.Line, Editor.TextArea.Caret.Column);
 
+        InitializeRibbon();
+
         Loaded += MainWindow_Loaded;
         Closing += MainWindow_Closing;
     }
@@ -109,6 +111,7 @@ public partial class MainWindow : Window
     {
         string text = Editor.Text;
         _vm.SyncText(text);
+        UpdateOutline(text);
 
         if (!_webViewReady)
             return;

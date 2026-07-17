@@ -205,19 +205,22 @@ Every button works on the **current selection** in the editor via the Core forma
 - [x] 3.6 Verified: app builds, launches, and stays running; all 72 tests green. **Commit.**
 
 ### Phase 4 — The Word-style toolbox (wire ribbon → Core formatters)
-- [ ] 4.1 Build the ribbon per §4 spec: Home, Insert, View, Export tabs. Icons via Segoe MDL2
-      Assets glyphs (`<TextBlock FontFamily="Segoe MDL2 Assets">`) — no icon files needed initially.
-- [ ] 4.2 Bind every formatting button to a `RelayCommand` that: gets editor selection → calls the
-      Core formatter → applies `EditResult` → keeps focus in the editor.
-- [ ] 4.3 Keyboard shortcuts: Ctrl+B/I/K, Ctrl+1…6 (headings), Ctrl+Shift+8 (bullets), Ctrl+F/H, etc.
-- [ ] 4.4 Insert dialogs: Link, Image (file picker + relative path option), Table (grid picker
-      **and** rows/cols dialog), code-block language dropdown.
-- [ ] 4.5 Find & Replace panel (find next/prev, replace one/all, match case, highlight matches).
-- [ ] 4.6 View tab: split/editor/preview modes, light/dark preview theme switch, sync-scroll toggle,
-      outline panel (parse headings via Markdig AST; click navigates editor).
-- [ ] 4.7 Synchronized scrolling: map editor line → preview element (inject `data-line` attributes
-      via a Markdig extension or per-block source positions) and scroll preview accordingly.
-- [ ] 4.8 Manual verification of **every** toolbox button. **Commit.**
+- [x] 4.1 Build the ribbon per §4 spec: Home, Insert, View, Export tabs (text/emoji button faces
+      instead of MDL2 glyphs — safer rendering; buttons are `Focusable=False` so editor selection
+      is preserved).
+- [x] 4.2 Bind every formatting button to routed commands handled in `MainWindow.Ribbon.cs`: get
+      editor selection → Core formatter → apply `EditResult` as a minimal single-undo-step
+      replacement → refocus editor.
+- [x] 4.3 Keyboard shortcuts: Ctrl+B/I/K, Ctrl+1…6/0 (headings), Ctrl+Shift+7/8/9 (lists),
+      Ctrl+Shift+X/C/H/Q/K, Ctrl+F/H, F3/Shift+F3 (see `EditorCommands.cs`).
+- [x] 4.4 Insert dialogs: Link, Image (file picker, auto-relative path), Table (hover grid picker
+      **and** rows/cols dialog), code-block language dropdown, footnote, date, emoji menu.
+- [x] 4.5 Find & Replace panel (find next/prev with wrap-around, replace one/all, match case).
+- [x] 4.6 View tab: split/editor/preview modes, light/dark preview theme switch, sync-scroll toggle,
+      editor font size, outline panel (heading regex; click navigates editor).
+- [x] 4.7 Synchronized scrolling: proportional editor→preview scroll mapping (fraction of scroll
+      height; the `data-line` element mapping remains a future enhancement).
+- [ ] 4.8 Manual verification of **every** toolbox button (user pass pending). **Commit.**
 
 ### Phase 5 — Export: PDF, HTML, print
 - [ ] 5.1 `PdfExportService`: create off-screen WebView2 (`CoreWebView2Environment` with user-data
