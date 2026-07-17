@@ -109,6 +109,9 @@ public partial class MainWindow : Window
 
     private async Task RefreshPreviewAsync()
     {
+        if (_exporting)
+            return; // don't clobber the print-rendered page mid-export
+
         string text = Editor.Text;
         _vm.SyncText(text);
         UpdateOutline(text);

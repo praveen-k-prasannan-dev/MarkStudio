@@ -223,15 +223,15 @@ Every button works on the **current selection** in the editor via the Core forma
 - [ ] 4.8 Manual verification of **every** toolbox button (user pass pending). **Commit.**
 
 ### Phase 5 — Export: PDF, HTML, print
-- [ ] 5.1 `PdfExportService`: create off-screen WebView2 (`CoreWebView2Environment` with user-data
-      folder under `%LOCALAPPDATA%`), load the full styled HTML, await navigation complete, call
-      `PrintToPdfAsync` with `CoreWebView2PrintSettings`.
-- [ ] 5.2 `ExportPdfDialog`: page size (A4/Letter), orientation, margins (narrow/normal/wide),
-      include background graphics toggle; remembers last-used settings.
-- [ ] 5.3 Export to HTML: write the same full page (inline the CSS) to a chosen `.html` file.
-- [ ] 5.4 Print: `CoreWebView2.ShowPrintUI()` on the preview.
+- [x] 5.1 PDF export reuses the preview WebView2 (simpler than an off-screen instance): re-render
+      with the light theme, await navigation, `PrintToPdfAsync` with `CoreWebView2PrintSettings`,
+      then restore the live preview.
+- [x] 5.2 `ExportPdfDialog`: page size (A4/Letter), orientation, margins (narrow/normal/wide),
+      include background graphics toggle; remembers last-used settings (per session).
+- [x] 5.3 Export to HTML: write the same full page (inline CSS) to a chosen `.html` file.
+- [x] 5.4 Print: `CoreWebView2.ShowPrintUI()` on the preview (Ctrl+P).
 - [ ] 5.5 Verify: export a document containing headings, a table, a task list, a code block, and an
-      image; open the PDF and confirm fidelity. **Commit.**
+      image; open the PDF and confirm fidelity (user pass pending). **Commit.**
 
 ### Phase 6 — Polish & hardening
 - [ ] 6.1 Auto-save recovery draft every 60 s to `%APPDATA%\MarkdownEditor\autosave\`; offer recovery

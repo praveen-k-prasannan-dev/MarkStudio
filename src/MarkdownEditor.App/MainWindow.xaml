@@ -40,6 +40,7 @@
         <CommandBinding Command="Open" Executed="Open_Executed" />
         <CommandBinding Command="Save" Executed="Save_Executed" />
         <CommandBinding Command="SaveAs" Executed="SaveAs_Executed" />
+        <CommandBinding Command="Print" Executed="Print_Executed" />
 
         <CommandBinding Command="{x:Static local:EditorCommands.Bold}" Executed="Formatting_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.Italic}" Executed="Formatting_Executed" />
