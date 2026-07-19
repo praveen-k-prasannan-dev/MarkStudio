@@ -191,12 +191,12 @@ public partial class MainWindow
     {
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
         MessageBox.Show(this,
-            $"MarkStudio {version}\n\n" +
+            $"MarkStudio Editor {version}\n\n" +
             "A Markdown document viewer and editor with a Word-style toolbox,\n" +
             "live preview, and PDF export.\n\n" +
             "Developed by Praveen K P.\n" +
             "Built with .NET 8 (WPF/C#), Markdig, AvalonEdit, WebView2, and xUnit.\n" +
             "Developed with Claude Code (Anthropic's Claude AI).",
-            "About MarkStudio", MessageBoxButton.OK, MessageBoxImage.Information);
+            "About MarkStudio Editor", MessageBoxButton.OK, MessageBoxImage.Information);
     }
 }

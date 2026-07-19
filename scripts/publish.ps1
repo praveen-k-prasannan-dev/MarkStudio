@@ -1,10 +1,10 @@
-# Builds the redistributable MarkStudio bundle.
-# Output: dist\MarkStudio\ (folder) and dist\MarkStudio-<version>-win-x64.zip
+# Builds the redistributable MarkStudio Editor bundle.
+# Output: dist\MarkStudioEditor\ (folder) and dist\MarkStudioEditor-<version>-win-x64.zip
 # The bundle is fully self-contained: target PCs need no Visual Studio and no .NET install.
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
-$outDir = Join-Path $root 'dist\MarkStudio'
+$outDir = Join-Path $root 'dist\MarkStudioEditor'
 $version = '1.0.0'
 
 if (Test-Path $outDir) { Remove-Item $outDir -Recurse -Force }
@@ -20,8 +20,8 @@ Remove-Item (Join-Path $outDir '*.xml') -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $outDir '*.pdb') -Force -ErrorAction SilentlyContinue
 
 @'
-MarkStudio 1.0.0
-================
+MarkStudio Editor 1.0.0
+=======================
 A Markdown document viewer and editor with a Word-style toolbox,
 live preview, and PDF export.
 
@@ -31,15 +31,15 @@ xUnit, and CommunityToolkit.Mvvm. Developed with Claude Code (Anthropic's Claude
 
 HOW TO RUN
 ----------
-1. Copy this whole folder anywhere on the target PC (keep MarkStudio.exe and
-   the Assets folder together).
-2. Double-click MarkStudio.exe.
+1. Copy this whole folder anywhere on the target PC (keep MarkStudioEditor.exe
+   and the Assets folder together).
+2. Double-click MarkStudioEditor.exe.
 
 Nothing needs to be installed: the .NET runtime is bundled inside the exe.
 The first launch may take a few extra seconds while it unpacks itself.
 
-You can also open a file directly:  MarkStudio.exe "C:\path\to\notes.md"
-or drag a .md file onto MarkStudio.exe.
+You can also open a file directly:  MarkStudioEditor.exe "C:\path\to\notes.md"
+or drag a .md file onto MarkStudioEditor.exe.
 
 REQUIREMENTS
 ------------
@@ -56,7 +56,7 @@ NOTES
   code-signed), choose "More info" -> "Run anyway".
 '@ | Out-File (Join-Path $outDir 'README.txt') -Encoding utf8
 
-$zipPath = Join-Path $root "dist\MarkStudio-$version-win-x64.zip"
+$zipPath = Join-Path $root "dist\MarkStudioEditor-$version-win-x64.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 Compress-Archive -Path $outDir -DestinationPath $zipPath
 

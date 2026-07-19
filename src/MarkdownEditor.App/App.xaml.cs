@@ -16,7 +16,7 @@ public partial class App : Application
             MessageBox.Show(
                 $"An unexpected error occurred:\n{args.Exception.Message}\n\n" +
                 "The error has been logged. The application will try to continue.",
-                "MarkStudio", MessageBoxButton.OK, MessageBoxImage.Error);
+                "MarkStudio Editor", MessageBoxButton.OK, MessageBoxImage.Error);
             args.Handled = true;
         };
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>

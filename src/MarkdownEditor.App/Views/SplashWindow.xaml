@@ -1,7 +1,7 @@
 <Window x:Class="MarkdownEditor.App.Views.SplashWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MarkStudio"
+        Title="MarkStudio Editor"
         Icon="pack://application:,,,/Assets/app.ico"
         Width="640" Height="420"
         WindowStyle="None"
@@ -36,7 +36,7 @@
                 <Image Source="pack://application:,,,/Assets/splash-icon.png" Width="80" Height="80"
                        VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
                 <StackPanel VerticalAlignment="Center" Margin="20,0,0,0">
-                    <TextBlock Text="MarkStudio" FontSize="44" FontWeight="SemiBold"
+                    <TextBlock Text="MarkStudio Editor" FontSize="36" FontWeight="SemiBold"
                                Foreground="White" FontFamily="Segoe UI" />
                     <TextBlock x:Name="VersionText" Text="Version 1.0"
                                FontSize="15" Foreground="#FFC4B5FD" Margin="2,2,0,0" />

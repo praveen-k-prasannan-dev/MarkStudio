@@ -19,7 +19,7 @@ public partial class MainViewModel : ObservableObject
             "MarkdownEditor", "recent.json"));
 
     [ObservableProperty]
-    private string _windowTitle = "Untitled — MarkStudio";
+    private string _windowTitle = "Untitled — MarkStudio Editor";
 
     [ObservableProperty]
     private string _statusInfo = "0 words";
@@ -81,5 +81,5 @@ public partial class MainViewModel : ObservableObject
     }
 
     private void UpdateTitle() =>
-        WindowTitle = $"{_document.Title}{(_document.IsDirty ? " ●" : "")} — MarkStudio";
+        WindowTitle = $"{_document.Title}{(_document.IsDirty ? " ●" : "")} — MarkStudio Editor";
 }

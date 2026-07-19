@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="src/MarkdownEditor.App/Assets/splash-icon.png" alt="MarkStudio icon" width="110" />
+  <img src="src/MarkdownEditor.App/Assets/splash-icon.png" alt="MarkStudio Editor icon" width="110" />
 </p>
 
-<h1 align="center">MarkStudio</h1>
+<h1 align="center">MarkStudio Editor</h1>
 
 <p align="center">
   A Windows Markdown document viewer &amp; editor with a <b>Microsoft Word–style toolbox</b>,
@@ -15,7 +15,7 @@
 
 ---
 
-![MarkStudio main window](docs/images/main-window.png)
+![MarkStudio Editor main window](docs/images/main-window.png)
 
 *The main window: ribbon toolbox on top, Markdown source with syntax highlighting on the left, live rendered preview on the right, word count and caret position in the status bar.*
 
@@ -29,37 +29,37 @@
 
 ## Download, extract, and run
 
-MarkStudio ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
+MarkStudio Editor ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
-1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudio-1.0.0-win-x64.zip` (~64 MB).
-2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudio`).
-   Keep the extracted files together: `MarkStudio.exe` and the `Assets` folder belong side by side.
-3. Double-click **`MarkStudio.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
+1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.0.0-win-x64.zip` (~64 MB).
+2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
+   Keep the extracted files together: `MarkStudioEditor.exe` and the `Assets` folder belong side by side.
+3. Double-click **`MarkStudioEditor.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
 4. If Windows SmartScreen shows *"Windows protected your PC"* (the exe is not code-signed), click **More info → Run anyway**.
 
-You can also open a document directly: drag any `.md` file onto `MarkStudio.exe`, or run
-`MarkStudio.exe "C:\path\to\notes.md"`.
+You can also open a document directly: drag any `.md` file onto `MarkStudioEditor.exe`, or run
+`MarkStudioEditor.exe "C:\path\to\notes.md"`.
 
 > **Requirements:** Windows 10 (64-bit) or Windows 11. The preview pane uses the **Microsoft Edge WebView2 Runtime**, which is already present on Windows 11 and on any PC with Microsoft Edge. If it's missing, the app shows a friendly message with the [free download link](https://developer.microsoft.com/microsoft-edge/webview2/).
 
 ## The splash screen
 
-![MarkStudio splash screen](docs/images/splash-screen.png)
+![MarkStudio Editor splash screen](docs/images/splash-screen.png)
 
-On startup MarkStudio shows a Visual Studio-style splash with the version, credits, and a progress bar. It displays for 60 seconds — click **Skip** to jump straight into the editor.
+On startup MarkStudio Editor shows a Visual Studio-style splash with the version, credits, and a progress bar. It displays for 60 seconds — click **Skip** to jump straight into the editor.
 
 ## Using the application
 
 ### Title bar and window
 
-The title bar shows the current document name, a `●` marker when there are **unsaved changes** (e.g. `notes.md ● — MarkStudio`), and the standard minimize/maximize/close controls. Closing with unsaved changes always asks *Save / Don't save / Cancel* — you can't lose work by accident. The window size, position, and your view preferences are remembered between sessions.
+The title bar shows the current document name, a `●` marker when there are **unsaved changes** (e.g. `notes.md ● — MarkStudio Editor`), and the standard minimize/maximize/close controls. Closing with unsaved changes always asks *Save / Don't save / Cancel* — you can't lose work by accident. The window size, position, and your view preferences are remembered between sessions.
 
 ### Menu bar
 
 | Menu | Contents |
 |------|----------|
 | **File** | New (`Ctrl+N`), Open (`Ctrl+O`), **Open Recent** (last 10 files), Save (`Ctrl+S`), Save As (`Ctrl+Shift+S`), Exit |
-| **Help** | About MarkStudio (version and credits) |
+| **Help** | About MarkStudio Editor (version and credits) |
 
 ### The ribbon toolbox
 
@@ -76,6 +76,9 @@ The ribbon has four tabs, like Word:
 Every formatting button is a **toggle**: select text and click Bold to make it `**bold**`; click again to remove it. With nothing selected, the markers are inserted and the caret lands between them, ready to type.
 
 **Insert** — content blocks:
+
+![The Insert tab](docs/images/insert-tab.png)
+
 | Group | Controls |
 |-------|----------|
 | Tables | **Table ▾** opens the Word-style hover grid picker; *Insert Table…* opens a rows/columns dialog |
@@ -125,7 +128,7 @@ dotnet run --project src/MarkdownEditor.App    # run the app
 ## Project structure
 
 ```
-MarkStudio/
+MarkStudio/                                 (repository)
 ├── src/
 │   ├── MarkdownEditor.Core/            # ALL logic — a UI-free .NET 8 class library
 │   │   ├── Markdown/                   #   Markdig pipeline → HTML, full-page builder
@@ -163,7 +166,7 @@ The architecture rule: **anything testable without a window lives in `MarkdownEd
 
 ## How this app was built — an AI development story
 
-MarkStudio was developed by **Praveen K P** in a pair-programming session with **Claude Code**, powered by Anthropic's **Claude Fable** model (the first model of the Claude 5 family). The entire project — plan, code, tests, branding, packaging, and this release — was built through conversation.
+MarkStudio Editor was developed by **Praveen K P** in a pair-programming session with **Claude Code**, powered by Anthropic's **Claude Fable** model (the first model of the Claude 5 family). The entire project — plan, code, tests, branding, packaging, and the release — was built through conversation.
 
 The timeline below comes straight from the git history (2026-07-17 → 2026-07-18):
 
