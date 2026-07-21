@@ -10,7 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest"><b>⬇ Download the latest release</b></a>
+  <a href="https://apps.microsoft.com/detail/9N1LCTH35QP5"><b>🛒 Get it from the Microsoft Store</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest"><b>⬇ Download the .zip directly</b></a>
 </p>
 
 ---
@@ -27,9 +29,15 @@
 - **Export** — PDF with page setup (A4/Letter, orientation, margins), standalone HTML, and printing.
 - **Everyday comfort** — recent files, find & replace, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
 
-## Download, extract, and run
+## Install
 
-MarkStudio Editor ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
+### Option A — Microsoft Store (recommended)
+
+**[Get MarkStudio Editor from the Microsoft Store](https://apps.microsoft.com/detail/9N1LCTH35QP5)** — one click to install, no SmartScreen warning (Microsoft signs the package), and automatic updates whenever a new version ships.
+
+### Option B — Direct download (.zip)
+
+MarkStudio Editor also ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
 1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.0.0-win-x64.zip` (~64 MB).
 2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
