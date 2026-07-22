@@ -34,8 +34,23 @@ public partial class MainWindow
 
         Editor.FontSize = Math.Clamp(_settings.EditorFontSize, 8, 32);
         SyncScrollCheck.IsChecked = _settings.SyncScroll;
-        DarkThemeToggle.IsChecked = _settings.DarkPreview;
         OutlineToggle.IsChecked = _settings.ShowOutline;
+
+        switch (_settings.ThemeMode)
+        {
+            case "Dark":
+                SetThemeComboSilently(1);
+                ApplyBuiltInTheme(dark: true);
+                break;
+            case "Custom" when !string.IsNullOrEmpty(_settings.CustomThemePath) && File.Exists(_settings.CustomThemePath):
+                SetThemeComboSilently(2);
+                LoadCustomTheme(_settings.CustomThemePath);
+                break;
+            default:
+                SetThemeComboSilently(0);
+                ApplyBuiltInTheme(dark: false);
+                break;
+        }
 
         switch (_settings.ViewMode)
         {
@@ -55,7 +70,8 @@ public partial class MainWindow
         }
         _settings.EditorFontSize = Editor.FontSize;
         _settings.SyncScroll = SyncScrollCheck.IsChecked == true;
-        _settings.DarkPreview = DarkThemeToggle.IsChecked == true;
+        _settings.ThemeMode = _activeThemeIndex switch { 1 => "Dark", 2 => "Custom", _ => "Light" };
+        _settings.CustomThemePath = _customThemePath;
         _settings.ShowOutline = OutlineToggle.IsChecked == true;
         _settings.ViewMode =
             ViewEditorOnly.IsChecked == true ? "Editor" :

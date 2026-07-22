@@ -5,7 +5,8 @@ namespace MarkdownEditor.App.Services;
 
 public sealed class AppSettings
 {
-    public bool DarkPreview { get; set; }
+    public string ThemeMode { get; set; } = "Light"; // Light | Dark | Custom
+    public string? CustomThemePath { get; set; }
     public string ViewMode { get; set; } = "Split"; // Split | Editor | Preview
     public double EditorFontSize { get; set; } = 14;
     public bool SyncScroll { get; set; } = true;

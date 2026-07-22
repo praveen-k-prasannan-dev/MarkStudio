@@ -328,6 +328,33 @@ Every button works on the **current selection** in the editor via the Core forma
 - [x] Dark theme preview readable; theme choice persists across restart.
 - [x] App does not freeze while typing rapidly in a large (1 MB) document.
 
+### Phase 8 — v1.1.0 "Quick wins" (added 2026-07-22)
+- [x] 8.1 **Interactive table editing**: `TableEditor` (Core) detects the pipe table around the
+      caret and computes Word/Excel-style Tab/Shift+Tab cell-to-cell navigation, including
+      growing the table when tabbing past the last cell. A contextual **Table** ribbon tab
+      (visible only while the caret is inside a table, like Word's Table Tools) exposes Insert
+      Row Above/Below, Delete Row, Insert Column Left/Right, Delete Column — backed by new
+      `TableBuilder.DeleteRow`/`DeleteColumn` alongside the existing Insert methods.
+- [x] 8.2 **Copy as HTML**: new Home-tab button renders the selection (or whole document) and
+      copies it to the clipboard in Windows' CF_HTML format (`Core/Clipboard/ClipboardHtmlFormat`)
+      plus a plain-text fallback, so pasting into Word/Outlook/browsers reproduces formatting.
+- [x] 8.3 **Reading time**: `DocumentStatistics.ReadingTimeMinutes` (200 wpm, min 1 for any
+      non-empty document) shown in the status bar alongside word/char/line counts.
+- [x] 8.4 **Custom preview themes**: the View tab's dark-mode toggle became a **Theme** combo
+      (Light/Dark/Custom…); choosing Custom opens a file picker for any `.css` file, persisted
+      across restarts via `AppSettings.ThemeMode`/`CustomThemePath`.
+- [x] 8.5 Core tests: 18 new (`TableEditorTests`, `DocumentStatisticsTests` reading-time cases,
+      `ClipboardHtmlFormatTests`) — 90 total, all green.
+- [x] 8.6 Self-verification: launched the published bundle and drove it end-to-end via UI
+      Automation — confirmed reading time in the status bar, the Table tab appearing/disappearing
+      with the caret, Tab-to-next-cell selecting the correct cell, Insert Row Below producing a
+      correct new row, and (via diagnostic log tracing rather than a screenshot, since WebView2's
+      hardware-accelerated surface doesn't reliably capture via `PrintWindow` in this sandboxed
+      environment) confirmed the Light/Dark theme switch generates and navigates to the correct
+      CSS. The custom-CSS file-picker flow itself was not automated (native file dialog) and is
+      left for the user's manual pass.
+- [ ] 8.7 User manual test pass, then commit → push → update GitHub release (v1.1.0) and README.
+
 ---
 
 ## 8. Working Agreements for Claude

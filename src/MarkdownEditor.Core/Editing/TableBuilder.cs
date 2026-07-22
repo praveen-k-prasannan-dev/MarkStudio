@@ -57,6 +57,37 @@ public static class TableBuilder
         return string.Join("\n", lines) + "\n";
     }
 
+    /// <summary>Removes the body row at the given body-row index (0 = first row after the header).</summary>
+    public static string DeleteRow(string tableText, int index)
+    {
+        var lines = SplitLines(tableText);
+        int at = 2 + index; // after header + separator
+        if (index < 0 || at >= lines.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        lines.RemoveAt(at);
+        return string.Join("\n", lines) + "\n";
+    }
+
+    /// <summary>Removes the column at the given index (0 = first column) from every row.</summary>
+    public static string DeleteColumn(string tableText, int index)
+    {
+        var lines = SplitLines(tableText);
+        var firstRowCells = ParseCells(lines[0]);
+        if (firstRowCells.Count <= 1)
+            throw new InvalidOperationException("Cannot delete the only remaining column.");
+        if (index < 0 || index >= firstRowCells.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        for (int i = 0; i < lines.Count; i++)
+        {
+            var cells = ParseCells(lines[i]);
+            cells.RemoveAt(index);
+            lines[i] = "| " + string.Join(" | ", cells.Select(c => c.Trim().PadRight(3))) + " |";
+        }
+        return string.Join("\n", lines) + "\n";
+    }
+
     private static void AppendRow(StringBuilder sb, string[] cells, int width)
     {
         sb.Append('|');

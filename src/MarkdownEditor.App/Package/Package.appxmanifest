@@ -9,7 +9,7 @@
   <Identity
     Name="PraveenKuttatharaPrasanna.MarkStudioEditor"
     Publisher="CN=558070D9-0C16-4D08-B8C5-4FF10D766ACB"
-    Version="1.0.0.0"
+    Version="1.1.0.0"
     ProcessorArchitecture="x64" />
 
   <mp:PhoneIdentity PhoneProductId="00000000-0000-0000-0000-000000000000" PhonePublisherId="00000000-0000-0000-0000-000000000000" />

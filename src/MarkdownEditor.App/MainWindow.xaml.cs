@@ -48,6 +48,7 @@ public partial class MainWindow : Window
             _vm.UpdateCaret(Editor.TextArea.Caret.Line, Editor.TextArea.Caret.Column);
 
         InitializeRibbon();
+        InitializeTableEditing();
         ApplySettings();
 
         Loaded += MainWindow_Loaded;
@@ -168,6 +169,9 @@ public partial class MainWindow : Window
         string path = Path.Combine(AppContext.BaseDirectory, "Assets", fileName);
         return File.Exists(path) ? File.ReadAllText(path) : "";
     }
+
+    private static string LoadCssFromPath(string fullPath) =>
+        File.Exists(fullPath) ? File.ReadAllText(fullPath) : "";
 
     // ---------- File handling ----------
 

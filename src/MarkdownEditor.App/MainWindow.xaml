@@ -117,6 +117,7 @@
                                 <Button Style="{StaticResource RibbonButton}" Click="Copy_Click" ToolTip="Copy (Ctrl+C)">⧉</Button>
                                 <Button Style="{StaticResource RibbonButton}" Click="Undo_Click" ToolTip="Undo (Ctrl+Z)">↶</Button>
                                 <Button Style="{StaticResource RibbonButton}" Click="Redo_Click" ToolTip="Redo (Ctrl+Y)">↷</Button>
+                                <Button AutomationProperties.AutomationId="CopyAsHtmlButton" Style="{StaticResource RibbonButton}" Click="CopyAsHtml_Click" ToolTip="Copy as HTML (paste formatted into Word, Outlook, etc.)" Padding="6,2">📋 HTML</Button>
                             </StackPanel>
                             <TextBlock Style="{StaticResource GroupLabel}" Text="Clipboard" />
                         </StackPanel>
@@ -255,6 +256,34 @@
                 </StackPanel>
             </TabItem>
 
+            <!-- TABLE (contextual: only visible while the caret is inside a table, like Word's Table Tools) -->
+            <TabItem x:Name="TableTab" Header="Table" Visibility="Collapsed">
+                <StackPanel Orientation="Horizontal" Height="58">
+
+                    <Border Style="{StaticResource RibbonGroup}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button AutomationProperties.AutomationId="InsertRowAboveButton" Style="{StaticResource RibbonButton}" Click="InsertRowAbove_Click" ToolTip="Insert row above" Padding="8,2">⬆ Row</Button>
+                                <Button AutomationProperties.AutomationId="InsertRowBelowButton" Style="{StaticResource RibbonButton}" Click="InsertRowBelow_Click" ToolTip="Insert row below" Padding="8,2">⬇ Row</Button>
+                                <Button AutomationProperties.AutomationId="DeleteRowButton" Style="{StaticResource RibbonButton}" Click="DeleteRow_Click" ToolTip="Delete current row" Padding="8,2">✕ Row</Button>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource GroupLabel}" Text="Rows" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource RibbonGroup}" BorderThickness="0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button AutomationProperties.AutomationId="InsertColumnLeftButton" Style="{StaticResource RibbonButton}" Click="InsertColumnLeft_Click" ToolTip="Insert column to the left" Padding="8,2">⬅ Col</Button>
+                                <Button AutomationProperties.AutomationId="InsertColumnRightButton" Style="{StaticResource RibbonButton}" Click="InsertColumnRight_Click" ToolTip="Insert column to the right" Padding="8,2">➡ Col</Button>
+                                <Button AutomationProperties.AutomationId="DeleteColumnButton" Style="{StaticResource RibbonButton}" Click="DeleteColumn_Click" ToolTip="Delete current column" Padding="8,2">✕ Col</Button>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource GroupLabel}" Text="Columns" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </TabItem>
+
             <!-- VIEW -->
             <TabItem Header="View">
                 <StackPanel Orientation="Horizontal" Height="58">
@@ -274,8 +303,14 @@
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Height="30">
                                 <CheckBox x:Name="SyncScrollCheck" Content="Sync scrolling" IsChecked="True" VerticalAlignment="Center" Margin="4,0" Focusable="False" />
-                                <ToggleButton x:Name="DarkThemeToggle" Style="{StaticResource RibbonToggle}" Content="🌙 Dark preview"
-                                              Checked="Theme_Changed" Unchecked="Theme_Changed" Padding="8,2" />
+                                <TextBlock Text="Theme:" VerticalAlignment="Center" Margin="8,0,4,0" />
+                                <ComboBox x:Name="ThemeCombo" AutomationProperties.AutomationId="ThemeCombo" Width="100" Height="26" Focusable="False"
+                                          VerticalAlignment="Center" SelectionChanged="ThemeCombo_SelectionChanged"
+                                          ToolTip="Preview theme">
+                                    <ComboBoxItem Content="Light" />
+                                    <ComboBoxItem Content="Dark" />
+                                    <ComboBoxItem Content="Custom…" />
+                                </ComboBox>
                             </StackPanel>
                             <TextBlock Style="{StaticResource GroupLabel}" Text="Preview" />
                         </StackPanel>

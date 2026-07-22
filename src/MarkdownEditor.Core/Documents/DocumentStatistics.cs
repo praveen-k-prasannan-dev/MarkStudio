@@ -10,6 +10,11 @@ public readonly record struct DocumentStatistics(int Words, int Characters, int 
     private static readonly Regex WordPattern =
         new(@"[\p{L}\p{Nd}]+(?:['’-][\p{L}\p{Nd}]+)*", RegexOptions.Compiled);
 
+    private const double AverageWordsPerMinute = 200.0;
+
+    /// <summary>Estimated reading time in whole minutes (200 wpm), 0 for an empty document, minimum 1 otherwise.</summary>
+    public int ReadingTimeMinutes => Words == 0 ? 0 : Math.Max(1, (int)Math.Ceiling(Words / AverageWordsPerMinute));
+
     public static DocumentStatistics Compute(string text)
     {
         ArgumentNullException.ThrowIfNull(text);

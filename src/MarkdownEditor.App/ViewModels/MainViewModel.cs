@@ -77,7 +77,8 @@ public partial class MainViewModel : ObservableObject
     private void UpdateStatistics(string text)
     {
         var stats = DocumentStatistics.Compute(text);
-        StatusInfo = $"{stats.Words} words    {stats.Characters} characters    {stats.Lines} lines";
+        string readingTime = stats.ReadingTimeMinutes > 0 ? $"    ~{stats.ReadingTimeMinutes} min read" : "";
+        StatusInfo = $"{stats.Words} words    {stats.Characters} characters    {stats.Lines} lines{readingTime}";
     }
 
     private void UpdateTitle() =>

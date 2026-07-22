@@ -5,7 +5,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using MarkdownEditor.App.Views;
+using MarkdownEditor.Core.Clipboard;
 using MarkdownEditor.Core.Editing;
+using Microsoft.Win32;
+using WpfClipboard = System.Windows.Clipboard;
 
 namespace MarkdownEditor.App;
 
@@ -23,6 +26,9 @@ public partial class MainWindow
 
     private bool _suppressHeadingCombo;
     private bool _suppressOutlineSelection;
+    private bool _suppressThemeCombo;
+    private string? _customThemePath;
+    private int _activeThemeIndex; // 0 = Light, 1 = Dark, 2 = Custom
 
     private void InitializeRibbon()
     {
@@ -137,6 +143,20 @@ public partial class MainWindow
     private void Paste_Click(object sender, RoutedEventArgs e) { Editor.Paste(); Editor.Focus(); }
     private void Cut_Click(object sender, RoutedEventArgs e) { Editor.Cut(); Editor.Focus(); }
     private void Copy_Click(object sender, RoutedEventArgs e) { Editor.Copy(); Editor.Focus(); }
+
+    private void CopyAsHtml_Click(object sender, RoutedEventArgs e)
+    {
+        string markdown = Editor.SelectionLength > 0 ? Editor.SelectedText : Editor.Text;
+        string bodyHtml = _renderer.ToHtml(markdown);
+        string cfHtml = ClipboardHtmlFormat.Build(bodyHtml);
+
+        var data = new DataObject();
+        data.SetData(DataFormats.Html, cfHtml);
+        data.SetData(DataFormats.Text, markdown); // plain-text fallback for targets that don't accept HTML
+        WpfClipboard.SetDataObject(data, copy: true);
+
+        Editor.Focus();
+    }
     private void Undo_Click(object sender, RoutedEventArgs e) { Editor.Undo(); Editor.Focus(); }
     private void Redo_Click(object sender, RoutedEventArgs e) { Editor.Redo(); Editor.Focus(); }
     private void SelectAll_Click(object sender, RoutedEventArgs e) { Editor.SelectAll(); Editor.Focus(); }
@@ -385,16 +405,55 @@ public partial class MainWindow
         Splitter.Visibility = editorVisible && previewVisible ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void Theme_Changed(object sender, RoutedEventArgs e)
+    private void ThemeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (Editor is null)
+        if (_suppressThemeCombo || Editor is null || ThemeCombo.SelectedIndex < 0)
             return;
-        bool dark = DarkThemeToggle.IsChecked == true;
+
+        switch (ThemeCombo.SelectedIndex)
+        {
+            case 0: ApplyBuiltInTheme(dark: false); break;
+            case 1: ApplyBuiltInTheme(dark: true); break;
+            default: PromptForCustomTheme(); break;
+        }
+    }
+
+    private void ApplyBuiltInTheme(bool dark)
+    {
+        _customThemePath = null;
+        _activeThemeIndex = dark ? 1 : 0;
         _css = LoadCss(dark ? "preview-dark.css" : "preview-light.css");
         Preview.DefaultBackgroundColor = dark
             ? System.Drawing.Color.FromArgb(0x0D, 0x11, 0x17)
             : System.Drawing.Color.White;
         _ = RefreshPreviewAsync();
+    }
+
+    private void PromptForCustomTheme()
+    {
+        var dialog = new OpenFileDialog { Filter = "CSS files (*.css)|*.css|All files (*.*)|*.*" };
+        if (dialog.ShowDialog(this) != true)
+        {
+            SetThemeComboSilently(_activeThemeIndex); // cancelled: revert to whichever theme was actually active
+            return;
+        }
+        LoadCustomTheme(dialog.FileName);
+    }
+
+    private void LoadCustomTheme(string path)
+    {
+        _customThemePath = path;
+        _activeThemeIndex = 2;
+        _css = LoadCssFromPath(path);
+        Preview.DefaultBackgroundColor = System.Drawing.Color.White;
+        _ = RefreshPreviewAsync();
+    }
+
+    private void SetThemeComboSilently(int index)
+    {
+        _suppressThemeCombo = true;
+        ThemeCombo.SelectedIndex = index;
+        _suppressThemeCombo = false;
     }
 
     private void FontSizeUp_Click(object sender, RoutedEventArgs e) =>

@@ -17,7 +17,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>MarkStudioEditor</AssemblyName>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <Product>MarkStudio Editor</Product>
     <AssemblyTitle>MarkStudio Editor</AssemblyTitle>
     <Description>MarkStudio Editor — Markdown document viewer and editor with a Word-style toolbox and PDF export.</Description>
