@@ -34,6 +34,19 @@ public partial class MainWindow
     {
         BuildTablePicker();
         Editor.TextArea.TextView.ScrollOffsetChanged += TextView_ScrollOffsetChanged;
+
+        // AvalonEdit's TextArea handles the right mouse button internally (for its own caret
+        // repositioning), which marks the event handled and suppresses WPF's automatic
+        // show-ContextMenu-on-right-click behavior. Force it open explicitly instead.
+        Editor.PreviewMouseRightButtonUp += (_, e) =>
+        {
+            if (Editor.ContextMenu is { } menu)
+            {
+                menu.PlacementTarget = Editor;
+                menu.IsOpen = true;
+                e.Handled = true;
+            }
+        };
     }
 
     // ---------- Selection plumbing ----------

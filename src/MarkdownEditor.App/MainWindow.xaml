@@ -394,7 +394,24 @@
                                    WordWrap="True"
                                    HorizontalScrollBarVisibility="Disabled"
                                    VerticalScrollBarVisibility="Auto"
-                                   Padding="8,4" />
+                                   Padding="8,4">
+                <avalonEdit:TextEditor.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Cu_t" Click="Cut_Click" InputGestureText="Ctrl+X" />
+                        <MenuItem Header="_Copy" Click="Copy_Click" InputGestureText="Ctrl+C" />
+                        <MenuItem Header="_Paste" Click="Paste_Click" InputGestureText="Ctrl+V" />
+                        <Separator />
+                        <MenuItem Header="_Undo" Click="Undo_Click" InputGestureText="Ctrl+Z" />
+                        <MenuItem Header="_Redo" Click="Redo_Click" InputGestureText="Ctrl+Y" />
+                        <Separator />
+                        <MenuItem Header="_Bold" Command="{x:Static local:EditorCommands.Bold}" InputGestureText="Ctrl+B" />
+                        <MenuItem Header="_Italic" Command="{x:Static local:EditorCommands.Italic}" InputGestureText="Ctrl+I" />
+                        <MenuItem Header="Insert _Link…" Command="{x:Static local:EditorCommands.InsertLink}" InputGestureText="Ctrl+K" />
+                        <Separator />
+                        <MenuItem Header="Select _All" Click="SelectAll_Click" InputGestureText="Ctrl+A" />
+                    </ContextMenu>
+                </avalonEdit:TextEditor.ContextMenu>
+            </avalonEdit:TextEditor>
 
             <GridSplitter x:Name="Splitter"
                           Grid.Column="2"
