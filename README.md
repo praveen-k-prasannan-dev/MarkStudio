@@ -28,8 +28,12 @@
 - **Live preview** — GitHub-style rendering that updates as you type, with synchronized scrolling, a clickable document outline, and a **Light / Dark / Custom** theme picker (bring your own CSS).
 - **Table grid picker** — hover a grid to insert an N×M table, exactly like Word's Insert → Table.
 - **Copy as HTML** — copy your selection as real formatted HTML, so pasting into Word, Outlook, or a browser reproduces the formatting instead of raw Markdown syntax.
-- **Right-click context menu** — Cut/Copy/Paste/Undo/Redo, Bold/Italic/Insert Link, and (inside a table) the same row/column commands as the ribbon.
+- **Right-click context menu** — Cut/Copy/Paste/Undo/Redo, Bold/Italic/Insert Link, spelling suggestions, and (inside a table) the same row/column commands as the ribbon.
 - **Export** — PDF with page setup (A4/Letter, orientation, margins), standalone HTML, and printing.
+- **Command palette** (`Ctrl+Shift+P`) — a VS Code-style searchable list of every command the ribbon can do, plus contextual table actions when the caret is inside a table.
+- **Multiple documents** — open several files at once in tabs, each with its own undo history and dirty state; switching tabs is instant.
+- **Spell checking** — misspelled words get a dotted red underline as you type; right-click for suggestions or to add a word to the dictionary.
+- **Mermaid diagrams & math formulas** — fenced ` ```mermaid ` blocks and `$LaTeX$` render live in the preview, loaded only when a document actually uses them.
 - **Everyday comfort** — recent files, find & replace, reading-time estimate, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
 
 ## Install
@@ -42,7 +46,7 @@
 
 MarkStudio Editor also ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
-1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.1.0-win-x64.zip` (~64 MB).
+1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.2.0-win-x64.zip` (~65 MB).
 2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
    Keep the extracted files together: `MarkStudioEditor.exe` and the `Assets` folder belong side by side.
 3. Double-click **`MarkStudioEditor.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
@@ -71,6 +75,18 @@ The title bar shows the current document name, a `●` marker when there are **u
 |------|----------|
 | **File** | New (`Ctrl+N`), Open (`Ctrl+O`), **Open Recent** (last 10 files), Save (`Ctrl+S`), Save As (`Ctrl+Shift+S`), Exit |
 | **Help** | About MarkStudio Editor (version and credits) |
+
+### Multiple documents (tabs)
+
+![Multiple document tabs](docs/images/multi-tab-documents.png)
+
+Open several files at once — each gets its own tab, its own undo history, and its own dirty indicator. Click **+** (or `Ctrl+N`) for a new tab; new untitled documents are numbered ("Untitled", "Untitled 2", …) so you can tell them apart. Opening a file that's already open in a tab switches to it instead of duplicating it. Closing a tab with unsaved changes prompts to save, just like closing the window.
+
+### Command palette
+
+![Command palette](docs/images/command-palette.png)
+
+`Ctrl+Shift+P` opens a VS Code-style searchable list of every command the ribbon can do — type a few letters (fuzzy matching, so "list" finds Bullet/Numbered/Task List) and press `Enter` to run it. When the caret is inside a table, the palette also lists the row/column commands.
 
 ### The ribbon toolbox
 
@@ -128,7 +144,23 @@ Click into any table cell and a contextual **Table** tab appears in the ribbon. 
 
 ### Right-click context menu
 
-Right-click anywhere in the editor for Cut, Copy, Paste, Undo, Redo, Bold, Italic, Insert Link, and Select All. Right-click while inside a table and a **Table** submenu is added with the same row/column commands as the ribbon tab — it only appears when relevant.
+Right-click anywhere in the editor for Cut, Copy, Paste, Undo, Redo, Bold, Italic, Insert Link, and Select All. Right-click while inside a table and a **Table** submenu is added with the same row/column commands as the ribbon tab — it only appears when relevant. Right-click a misspelled word and a **Spelling** submenu with suggested corrections appears at the top (see below).
+
+### Spell checking
+
+![Spelling suggestions in the right-click menu](docs/images/spell-check.png)
+
+Misspelled words get a dotted red underline as you type. Right-click one for up to five suggested corrections or **Add to Dictionary** to stop it being flagged — useful for names and technical terms. Code blocks, inline code, and URLs are never spell-checked.
+
+### Mermaid diagrams and math formulas
+
+![A Mermaid flowchart rendered in the live preview](docs/images/mermaid-diagram.png)
+
+Fence a block with ` ```mermaid ` and it renders as an actual diagram (flowcharts, sequence diagrams, and everything else [Mermaid](https://mermaid.js.org/) supports) instead of code text.
+
+![Inline and block math formulas rendered in the live preview](docs/images/math-formulas.png)
+
+Math works the same way: `$inline math$` renders in the sentence, and a `$$` block on its own lines renders as a larger, centered formula. Both libraries are bundled locally and load only when a document actually contains a diagram or formula, so ordinary documents preview exactly as fast as before.
 
 ### Find & Replace
 
@@ -149,7 +181,7 @@ While you have unsaved changes, a recovery draft is written every 60 seconds. If
 git clone https://github.com/praveen-k-prasannan-dev/MarkStudio.git
 cd MarkStudio
 dotnet build                                   # requires .NET SDK 8 or newer
-dotnet test                                    # 90 unit tests
+dotnet test                                    # 135 unit tests
 dotnet run --project src/MarkdownEditor.App    # run the app
 .\scripts\publish.ps1                          # build the redistributable bundle + zip
 ```
@@ -160,23 +192,28 @@ dotnet run --project src/MarkdownEditor.App    # run the app
 MarkStudio/                                 (repository)
 ├── src/
 │   ├── MarkdownEditor.Core/            # ALL logic — a UI-free .NET 8 class library
-│   │   ├── Markdown/                   #   Markdig pipeline → HTML, full-page builder
+│   │   ├── Markdown/                   #   Markdig pipeline → HTML, full-page builder, Mermaid/math wiring
 │   │   ├── Editing/                    #   inline/block/list/table formatters, table cell navigation
-│   │   ├── Documents/                  #   document state, word/char/line/reading-time statistics
+│   │   ├── Documents/                  #   document state/statistics, DocumentManager (multi-tab)
 │   │   ├── Clipboard/                  #   CF_HTML clipboard formatter (Copy as HTML)
+│   │   ├── Palette/                    #   fuzzy matcher powering the command palette
+│   │   ├── Spelling/                   #   Hunspell-backed spell checker + Markdown-aware scanner
 │   │   └── Services/                   #   file I/O, recent-files list
 │   └── MarkdownEditor.App/             # WPF shell (thin — no business logic)
 │       ├── MainWindow.xaml(.cs)        #   window, editor, live preview, file handling
 │       ├── MainWindow.Ribbon.cs        #   ribbon commands → Core formatters
 │       ├── MainWindow.TableEditing.cs  #   contextual Table tab, Tab/Shift+Tab cell navigation
+│       ├── MainWindow.Tabs.cs          #   multi-tab document management
+│       ├── MainWindow.CommandPalette.cs#   Ctrl+Shift+P command registry
+│       ├── MainWindow.SpellCheck.cs    #   spell-check scanning, underline decoration, suggestions
 │       ├── MainWindow.Export.cs        #   PDF/HTML export, print
 │       ├── MainWindow.Polish.cs        #   settings, autosave, drag-drop, About
 │       ├── ViewModels/                 #   MVVM view model (title, status bar)
-│       ├── Views/                      #   dialogs: link, image, table, PDF, splash
+│       ├── Views/                      #   dialogs: link, image, table, PDF, splash, command palette
 │       ├── Services/                   #   settings store, diagnostic log
-│       └── Assets/                     #   app icon, preview CSS themes
+│       └── Assets/                     #   app icon, preview CSS themes, Mermaid/MathJax, dictionaries
 ├── tests/
-│   └── MarkdownEditor.Core.Tests/      # 90 xUnit tests for the Core library
+│   └── MarkdownEditor.Core.Tests/      # 135 xUnit tests for the Core library
 ├── scripts/publish.ps1                 # one-command redistributable bundle
 ├── BUILD_PLAN.md                       # the complete phased build plan (all checked ✓)
 └── SAMPLE.md                           # demo document exercising every feature
@@ -189,9 +226,12 @@ The architecture rule: **anything testable without a window lives in `MarkdownEd
 | Concern | Library |
 |---------|---------|
 | UI | WPF on .NET 8 (C#) |
-| Markdown engine | [Markdig](https://github.com/xoofx/markdig) |
+| Markdown engine | [Markdig](https://github.com/xoofx/markdig) (advanced extensions + math) |
 | Source editor | [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) |
 | Preview & PDF | [Microsoft Edge WebView2](https://developer.microsoft.com/microsoft-edge/webview2/) (`PrintToPdfAsync`) |
+| Diagrams | [Mermaid](https://mermaid.js.org/) (bundled locally) |
+| Math typesetting | [MathJax](https://www.mathjax.org/) (bundled locally) |
+| Spell checking | [WeCantSpell.Hunspell](https://github.com/aarondandy/WeCantSpell.Hunspell) + LibreOffice `en_US` dictionary |
 | MVVM | CommunityToolkit.Mvvm |
 | Tests | xUnit + FluentAssertions |
 
@@ -217,7 +257,9 @@ A few numbers worth noting:
 
 **How does this compare?** Rough, honest estimates rather than benchmarks: a solo developer building this from scratch — learning Markdig's pipeline quirks, AvalonEdit's selection APIs, WebView2's PDF settings, plus writing the test suite — would typically need **two to four weeks**. Smaller/faster AI models can generate individual files quickly but tend to lose the thread on a multi-project architecture like this one (Core/App/Tests separation, a 7-phase plan, toggle-behavior contracts), requiring many more correction cycles. What distinguishes the Fable-class model in this project was **first-pass correctness at scale**: holding the whole plan in mind for hours, writing test-first code that passed immediately, and diagnosing environment-level issues (a corporate NuGet feed, a licensing change in a test library, phantom window interactions in a sandbox) without derailing the build.
 
-**Since v1.0.0:** the app shipped to the Microsoft Store, and development continued in the same conversational style. v1.1.0 ("Quick wins" — interactive table editing, Copy as HTML, reading time, custom preview themes, plus a right-click context menu) was planned as the first of three follow-up phases (Quick wins → Medium effort → Bigger features), each shipped as its own GitHub release, with the Store update deferred until all three land. v1.1.0 added 18 new unit tests (90 total) and roughly 800 lines across 19 files, including two same-session bug fixes — a right-click menu that silently failed to open, and a Ctrl+I shortcut swallowed internally by the editor control — both root-caused and fixed within the conversation that found them.
+**Since v1.0.0:** the app shipped to the Microsoft Store, and development continued in the same conversational style, as three follow-up phases (Quick wins → Medium effort → Bigger features), each shipped as its own GitHub release, with the Store update deferred until all three land. v1.1.0 ("Quick wins" — interactive table editing, Copy as HTML, reading time, custom preview themes, plus a right-click context menu) added 18 new unit tests (90 total) and roughly 800 lines across 19 files, including two same-session bug fixes — a right-click menu that silently failed to open, and a Ctrl+I shortcut swallowed internally by the editor control — both root-caused and fixed within the conversation that found them.
+
+v1.2.0 ("Medium effort" — command palette, multi-tab documents, spell checking, and Mermaid/math rendering) added 45 new unit tests (135 total) and integrated four new libraries (WeCantSpell.Hunspell, a bundled Hunspell dictionary, Mermaid, and MathJax) without a single dependency conflict. One more same-session bug turned up during the developer's own manual test pass afterward: selecting a command from the palette crashed the app with a WPF re-entrancy error (`Close()` triggering its own `Deactivated` event, which called `Close()` a second time). Root-caused and fixed in the same conversation, with a guard flag added to make every close path idempotent.
 
 *This README — including its screenshots, captured by the model running the app itself — was, of course, also written by Claude.*
 
