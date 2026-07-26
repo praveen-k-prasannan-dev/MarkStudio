@@ -24,10 +24,13 @@
 ## Features
 
 - **Word-style ribbon** — click Bold, Headings, Lists, Table… instead of typing Markdown syntax. Every button toggles like Word (Bold on bold text un-bolds it) and has a keyboard shortcut.
-- **Live preview** — GitHub-style rendering that updates as you type, with synchronized scrolling, light/dark themes, and a clickable document outline.
+- **Interactive table editing** — `Tab`/`Shift+Tab` jump between cells like Excel (tabbing past the last cell grows the table automatically); a contextual **Table** ribbon tab and a right-click submenu let you insert/delete rows and columns without leaving the keyboard.
+- **Live preview** — GitHub-style rendering that updates as you type, with synchronized scrolling, a clickable document outline, and a **Light / Dark / Custom** theme picker (bring your own CSS).
 - **Table grid picker** — hover a grid to insert an N×M table, exactly like Word's Insert → Table.
+- **Copy as HTML** — copy your selection as real formatted HTML, so pasting into Word, Outlook, or a browser reproduces the formatting instead of raw Markdown syntax.
+- **Right-click context menu** — Cut/Copy/Paste/Undo/Redo, Bold/Italic/Insert Link, and (inside a table) the same row/column commands as the ribbon.
 - **Export** — PDF with page setup (A4/Letter, orientation, margins), standalone HTML, and printing.
-- **Everyday comfort** — recent files, find & replace, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
+- **Everyday comfort** — recent files, find & replace, reading-time estimate, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
 
 ## Install
 
@@ -39,7 +42,7 @@
 
 MarkStudio Editor also ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
-1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.0.0-win-x64.zip` (~64 MB).
+1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.1.0-win-x64.zip` (~64 MB).
 2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
    Keep the extracted files together: `MarkStudioEditor.exe` and the `Assets` folder belong side by side.
 3. Double-click **`MarkStudioEditor.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
@@ -76,10 +79,16 @@ The ribbon has four tabs, like Word:
 **Home** — everyday formatting:
 | Group | Controls |
 |-------|----------|
-| Clipboard | Paste, Cut, Copy, Undo, Redo |
+| Clipboard | Paste, Cut, Copy, Undo, Redo, **Copy as HTML** |
 | Font | **Bold** `Ctrl+B` · *Italic* `Ctrl+I` · ~~Strikethrough~~ `Ctrl+Shift+X` · `inline code` `Ctrl+Shift+C` · highlight `Ctrl+Shift+H` |
 | Paragraph | Heading dropdown (Normal, H1–H6; also `Ctrl+1`…`Ctrl+6`, `Ctrl+0` for normal) · bullet list `Ctrl+Shift+8` · numbered list `Ctrl+Shift+7` · task list `Ctrl+Shift+9` · blockquote `Ctrl+Shift+Q` |
 | Editing | Find `Ctrl+F` · Replace `Ctrl+H` · Select All |
+
+**Table** — appears only while the caret is inside a table (like Word's Table Tools):
+| Group | Controls |
+|-------|----------|
+| Rows | Insert Row Above · Insert Row Below · Delete Row |
+| Columns | Insert Column Left · Insert Column Right · Delete Column |
 
 Every formatting button is a **toggle**: select text and click Bold to make it `**bold**`; click again to remove it. With nothing selected, the markers are inserted and the caret lands between them, ready to type.
 
@@ -98,7 +107,7 @@ Every formatting button is a **toggle**: select text and click Bold to make it `
 | Group | Controls |
 |-------|----------|
 | Layout | **Split** / **Editor only** / **Preview only** |
-| Preview | Sync scrolling on/off · 🌙 Dark preview theme |
+| Preview | Sync scrolling on/off · **Theme**: Light / Dark / Custom… (pick any `.css` file, remembered across restarts) |
 | Editor font | A− / A+ text size |
 | Panels | ☰ **Outline** — a headings tree; click any heading to jump there |
 
@@ -108,6 +117,18 @@ Every formatting button is a **toggle**: select text and click Bold to make it `
 | Export | **Export to PDF…** (page size, orientation, margins, backgrounds) · Export to HTML · Print `Ctrl+P` |
 
 The PDF is rendered by the same engine as the preview, so **what you see is exactly what you get**.
+
+### Interactive table editing
+
+Click into any table cell and a contextual **Table** tab appears in the ribbon. A few ways to edit tables quickly:
+
+- **`Tab`** jumps to the next cell, selecting its contents (type to replace, like Excel). Tabbing past the last cell of the last row automatically adds a new row and moves into it.
+- **`Shift+Tab`** jumps to the previous cell.
+- The **Table** ribbon tab and the **right-click menu** (see below) both offer Insert Row Above/Below, Delete Row, Insert Column Left/Right, and Delete Column.
+
+### Right-click context menu
+
+Right-click anywhere in the editor for Cut, Copy, Paste, Undo, Redo, Bold, Italic, Insert Link, and Select All. Right-click while inside a table and a **Table** submenu is added with the same row/column commands as the ribbon tab — it only appears when relevant.
 
 ### Find & Replace
 
@@ -128,7 +149,7 @@ While you have unsaved changes, a recovery draft is written every 60 seconds. If
 git clone https://github.com/praveen-k-prasannan-dev/MarkStudio.git
 cd MarkStudio
 dotnet build                                   # requires .NET SDK 8 or newer
-dotnet test                                    # 72 unit tests
+dotnet test                                    # 90 unit tests
 dotnet run --project src/MarkdownEditor.App    # run the app
 .\scripts\publish.ps1                          # build the redistributable bundle + zip
 ```
@@ -140,12 +161,14 @@ MarkStudio/                                 (repository)
 ├── src/
 │   ├── MarkdownEditor.Core/            # ALL logic — a UI-free .NET 8 class library
 │   │   ├── Markdown/                   #   Markdig pipeline → HTML, full-page builder
-│   │   ├── Editing/                    #   inline/block/list formatters, table builder
-│   │   ├── Documents/                  #   document state, word/char/line statistics
+│   │   ├── Editing/                    #   inline/block/list/table formatters, table cell navigation
+│   │   ├── Documents/                  #   document state, word/char/line/reading-time statistics
+│   │   ├── Clipboard/                  #   CF_HTML clipboard formatter (Copy as HTML)
 │   │   └── Services/                   #   file I/O, recent-files list
 │   └── MarkdownEditor.App/             # WPF shell (thin — no business logic)
 │       ├── MainWindow.xaml(.cs)        #   window, editor, live preview, file handling
 │       ├── MainWindow.Ribbon.cs        #   ribbon commands → Core formatters
+│       ├── MainWindow.TableEditing.cs  #   contextual Table tab, Tab/Shift+Tab cell navigation
 │       ├── MainWindow.Export.cs        #   PDF/HTML export, print
 │       ├── MainWindow.Polish.cs        #   settings, autosave, drag-drop, About
 │       ├── ViewModels/                 #   MVVM view model (title, status bar)
@@ -153,7 +176,7 @@ MarkStudio/                                 (repository)
 │       ├── Services/                   #   settings store, diagnostic log
 │       └── Assets/                     #   app icon, preview CSS themes
 ├── tests/
-│   └── MarkdownEditor.Core.Tests/      # 72 xUnit tests for the Core library
+│   └── MarkdownEditor.Core.Tests/      # 90 xUnit tests for the Core library
 ├── scripts/publish.ps1                 # one-command redistributable bundle
 ├── BUILD_PLAN.md                       # the complete phased build plan (all checked ✓)
 └── SAMPLE.md                           # demo document exercising every feature
@@ -193,6 +216,8 @@ A few numbers worth noting:
 - All **72 unit tests were written before or alongside** the code they verify, and never went red.
 
 **How does this compare?** Rough, honest estimates rather than benchmarks: a solo developer building this from scratch — learning Markdig's pipeline quirks, AvalonEdit's selection APIs, WebView2's PDF settings, plus writing the test suite — would typically need **two to four weeks**. Smaller/faster AI models can generate individual files quickly but tend to lose the thread on a multi-project architecture like this one (Core/App/Tests separation, a 7-phase plan, toggle-behavior contracts), requiring many more correction cycles. What distinguishes the Fable-class model in this project was **first-pass correctness at scale**: holding the whole plan in mind for hours, writing test-first code that passed immediately, and diagnosing environment-level issues (a corporate NuGet feed, a licensing change in a test library, phantom window interactions in a sandbox) without derailing the build.
+
+**Since v1.0.0:** the app shipped to the Microsoft Store, and development continued in the same conversational style. v1.1.0 ("Quick wins" — interactive table editing, Copy as HTML, reading time, custom preview themes, plus a right-click context menu) was planned as the first of three follow-up phases (Quick wins → Medium effort → Bigger features), each shipped as its own GitHub release, with the Store update deferred until all three land. v1.1.0 added 18 new unit tests (90 total) and roughly 800 lines across 19 files, including two same-session bug fixes — a right-click menu that silently failed to open, and a Ctrl+I shortcut swallowed internally by the editor control — both root-caused and fixed within the conversation that found them.
 
 *This README — including its screenshots, captured by the model running the app itself — was, of course, also written by Claude.*
 

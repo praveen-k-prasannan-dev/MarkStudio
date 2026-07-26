@@ -353,7 +353,11 @@ Every button works on the **current selection** in the editor via the Core forma
       environment) confirmed the Light/Dark theme switch generates and navigates to the correct
       CSS. The custom-CSS file-picker flow itself was not automated (native file dialog) and is
       left for the user's manual pass.
-- [ ] 8.7 User manual test pass, then commit → push → update GitHub release (v1.1.0) and README.
+- [x] 8.7 User manual test pass (2026-07-26): confirmed table row/column insert/delete, Tab/Shift+Tab
+      cell navigation, Copy as HTML, reading time, and theme switching all work. Found two bugs
+      during testing (right-click context menu did not open at all; Ctrl+I did not toggle italic)
+      — both root-caused (AvalonEdit swallows right-click and Ctrl+I internally) and fixed in the
+      same session; user re-confirmed both fixes. Pushed → GitHub release v1.1.0 → README updated.
 
 ---
 

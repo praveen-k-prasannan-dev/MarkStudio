@@ -5,7 +5,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $outDir = Join-Path $root 'dist\MarkStudioEditor'
-$version = '1.0.0'
+$version = '1.1.0'
 
 if (Test-Path $outDir) { Remove-Item $outDir -Recurse -Force }
 
@@ -19,8 +19,8 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed" }
 Remove-Item (Join-Path $outDir '*.xml') -Force -ErrorAction SilentlyContinue
 Remove-Item (Join-Path $outDir '*.pdb') -Force -ErrorAction SilentlyContinue
 
-@'
-MarkStudio Editor 1.0.0
+@"
+MarkStudio Editor $version
 =======================
 A Markdown document viewer and editor with a Word-style toolbox,
 live preview, and PDF export.
@@ -54,7 +54,7 @@ NOTES
 - Settings are stored per user in %APPDATA%\MarkdownEditor\.
 - If Windows SmartScreen warns about an unrecognized app (the exe is not
   code-signed), choose "More info" -> "Run anyway".
-'@ | Out-File (Join-Path $outDir 'README.txt') -Encoding utf8
+"@ | Out-File (Join-Path $outDir 'README.txt') -Encoding utf8
 
 $zipPath = Join-Path $root "dist\MarkStudioEditor-$version-win-x64.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
