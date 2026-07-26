@@ -6,20 +6,21 @@ using MarkdownEditor.Core.Services;
 namespace MarkdownEditor.App.ViewModels;
 
 /// <summary>
-/// Holds the document state and status-bar text. Dialogs and editor interaction
-/// live in the window code-behind; this class stays free of WPF types.
+/// Holds the open documents (tabs) and status-bar text for whichever one is active.
+/// Dialogs and editor interaction live in the window code-behind; this class stays free of WPF types.
 /// </summary>
 public partial class MainViewModel : ObservableObject
 {
     private readonly IFileService _fileService = new FileService();
-    private readonly DocumentState _document = new();
+
+    public DocumentManager Documents { get; } = new();
 
     public IRecentFilesService RecentFiles { get; } = new RecentFilesService(
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "MarkdownEditor", "recent.json"));
 
     [ObservableProperty]
-    private string _windowTitle = "Untitled — MarkStudio Editor";
+    private string _windowTitle = "MarkStudio Editor";
 
     [ObservableProperty]
     private string _statusInfo = "0 words";
@@ -27,52 +28,65 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string _caretInfo = "Ln 1, Col 1";
 
-    public string? FilePath => _document.FilePath;
-    public bool IsDirty => _document.IsDirty;
-    public string DocumentTitle => _document.Title;
+    public string? FilePath => Documents.Active?.FilePath;
+    public bool IsDirty => Documents.Active?.IsDirty ?? false;
+    public string DocumentTitle => Documents.Active?.Title ?? "Untitled";
 
-    /// <summary>Cheap per-keystroke dirty flag; full text sync happens on the preview debounce.</summary>
+    /// <summary>Creates a new blank document/tab, makes it active, and returns it.</summary>
+    public DocumentState AddNewDocument()
+    {
+        var doc = Documents.AddNew();
+        RefreshForActiveTab();
+        return doc;
+    }
+
+    /// <summary>Cheap per-keystroke dirty flag on the active document; full text sync happens on the preview debounce.</summary>
     public void MarkDirty()
     {
-        _document.MarkDirty();
+        Documents.Active?.MarkDirty();
         UpdateTitle();
     }
 
     public void SyncText(string text)
     {
-        _document.SetText(text);
+        Documents.Active?.SetText(text);
         UpdateStatistics(text);
-        UpdateTitle();
-    }
-
-    public void NewDocument()
-    {
-        _document.Reset();
-        UpdateStatistics("");
         UpdateTitle();
     }
 
     public string LoadFile(string path) => _fileService.Load(path);
 
-    public void DocumentLoaded(string path, string text)
+    /// <summary>Loads a file into a new tab, makes it active, and returns the new document.</summary>
+    public DocumentState LoadIntoNewTab(string path, string text)
     {
-        _document.LoadFrom(path, text);
+        var doc = Documents.AddNew();
+        doc.LoadFrom(path, text);
         RecentFiles.Add(path);
-        UpdateStatistics(text);
-        UpdateTitle();
+        RefreshForActiveTab();
+        return doc;
     }
 
     public void Save(string path, string text)
     {
+        var active = Documents.Active;
+        if (active is null)
+            return;
         _fileService.Save(path, text);
-        _document.SetText(text);
-        _document.MarkSaved(path);
+        active.SetText(text);
+        active.MarkSaved(path);
         RecentFiles.Add(path);
         UpdateStatistics(text);
         UpdateTitle();
     }
 
     public void UpdateCaret(int line, int column) => CaretInfo = $"Ln {line}, Col {column}";
+
+    /// <summary>Refreshes title/status bar from whichever document is now active (call after switching tabs).</summary>
+    public void RefreshForActiveTab()
+    {
+        UpdateStatistics(Documents.Active?.Text ?? "");
+        UpdateTitle();
+    }
 
     private void UpdateStatistics(string text)
     {
@@ -81,6 +95,11 @@ public partial class MainViewModel : ObservableObject
         StatusInfo = $"{stats.Words} words    {stats.Characters} characters    {stats.Lines} lines{readingTime}";
     }
 
-    private void UpdateTitle() =>
-        WindowTitle = $"{_document.Title}{(_document.IsDirty ? " ●" : "")} — MarkStudio Editor";
+    private void UpdateTitle()
+    {
+        var active = Documents.Active;
+        WindowTitle = active is null
+            ? "MarkStudio Editor"
+            : $"{active.Title}{(active.IsDirty ? " ●" : "")} — MarkStudio Editor";
+    }
 }

@@ -5,11 +5,16 @@ namespace MarkdownEditor.Core.Markdown;
 /// <summary>Wraps a rendered HTML body fragment into a complete standalone page.</summary>
 public static class HtmlDocumentBuilder
 {
-    public static string BuildPage(string bodyHtml, string cssText, string title, string? baseHref = null)
+    /// <param name="extraHeadHtml">
+    /// Raw HTML appended to &lt;head&gt; after the stylesheet — e.g. script tags for optional
+    /// renderers (Mermaid, MathJax) that the caller decides whether the document actually needs.
+    /// </param>
+    public static string BuildPage(string bodyHtml, string cssText, string title, string? baseHref = null, string extraHeadHtml = "")
     {
         ArgumentNullException.ThrowIfNull(bodyHtml);
         ArgumentNullException.ThrowIfNull(cssText);
         ArgumentNullException.ThrowIfNull(title);
+        ArgumentNullException.ThrowIfNull(extraHeadHtml);
 
         string baseTag = baseHref is null
             ? ""
@@ -25,6 +30,7 @@ public static class HtmlDocumentBuilder
             <style>
             {cssText}
             </style>
+            {extraHeadHtml}
             </head>
             <body>
             <article class="markdown-body">

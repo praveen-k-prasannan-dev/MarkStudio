@@ -68,6 +68,7 @@
         <CommandBinding Command="{x:Static local:EditorCommands.Replace}" Executed="Replace_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.FindNext}" Executed="FindNext_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.FindPrevious}" Executed="FindPrevious_Executed" />
+        <CommandBinding Command="{x:Static local:EditorCommands.CommandPalette}" Executed="OpenCommandPalette_Executed" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -76,6 +77,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -355,8 +357,18 @@
             </TabItem>
         </TabControl>
 
+        <!-- Document tab strip -->
+        <Border Grid.Row="2" Background="#FFF3F3F3" BorderBrush="#FFDDDDDD" BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False">
+                <StackPanel x:Name="TabStripPanel" Orientation="Horizontal" DockPanel.Dock="Left" />
+                <Button x:Name="NewTabButton" AutomationProperties.AutomationId="NewTabButton" DockPanel.Dock="Left" Content="+" Width="26" Height="26"
+                        Margin="4,3,0,3" Padding="0,-2,0,0" FontSize="16" Focusable="False"
+                        Click="NewTabButton_Click" ToolTip="New document (Ctrl+N)" />
+            </DockPanel>
+        </Border>
+
         <!-- Find / Replace panel -->
-        <Border x:Name="FindPanel" Grid.Row="2" Visibility="Collapsed" Background="#FFF5F5F5"
+        <Border x:Name="FindPanel" Grid.Row="3" Visibility="Collapsed" Background="#FFF5F5F5"
                 BorderBrush="#FFDDDDDD" BorderThickness="0,0,0,1" Padding="6,4">
             <StackPanel Orientation="Horizontal">
                 <TextBox x:Name="FindBox" Width="220" VerticalContentAlignment="Center" KeyDown="FindBox_KeyDown" />
@@ -372,7 +384,7 @@
         </Border>
 
         <!-- Outline / editor / preview split -->
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="OutlineColumn" Width="0" />
                 <ColumnDefinition x:Name="EditorColumn" Width="*" />
@@ -397,6 +409,8 @@
                                    Padding="8,4">
                 <avalonEdit:TextEditor.ContextMenu>
                     <ContextMenu>
+                        <MenuItem x:Name="SpellingContextMenu" Header="Spelling" Visibility="Collapsed" />
+                        <Separator x:Name="SpellingContextSeparator" Visibility="Collapsed" />
                         <MenuItem Header="Cu_t" Click="Cut_Click" InputGestureText="Ctrl+X" />
                         <MenuItem Header="_Copy" Click="Copy_Click" InputGestureText="Ctrl+C" />
                         <MenuItem Header="_Paste" Click="Paste_Click" InputGestureText="Ctrl+V" />
@@ -437,7 +451,7 @@
         </Grid>
 
         <!-- Status bar -->
-        <StatusBar Grid.Row="4">
+        <StatusBar Grid.Row="5">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusInfo}" />
             </StatusBarItem>

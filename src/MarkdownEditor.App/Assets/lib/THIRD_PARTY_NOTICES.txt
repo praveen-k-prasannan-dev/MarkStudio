@@ -1,0 +1,29 @@
+MarkStudio Editor bundles the following third-party JavaScript libraries to render
+Mermaid diagrams and mathematical notation locally in the preview pane, with no
+network access required at runtime.
+
+--------------------------------------------------------------------------------
+Mermaid (mermaid.min.js)
+https://github.com/mermaid-js/mermaid
+Licensed under the MIT License.
+
+--------------------------------------------------------------------------------
+MathJax (mathjax-tex-svg.js)
+https://github.com/mathjax/MathJax
+Licensed under the Apache License, Version 2.0.
+--------------------------------------------------------------------------------
+
+MarkStudio Editor also bundles the following for offline spell checking:
+
+--------------------------------------------------------------------------------
+WeCantSpell.Hunspell (a pure .NET Hunspell-compatible spell checking library)
+https://github.com/aardappel/WeCantSpell.Hunspell (fork of NHunspell/Hunspell logic)
+Licensed under the MIT License.
+
+en_US Hunspell dictionary (Assets/dictionaries/en_US.dic, en_US.aff)
+https://github.com/LibreOffice/dictionaries (en/ folder), derived from SCOWL
+http://wordlist.sourceforge.net
+Copyright 2000-2018 by Kevin Atkinson and contributors. Licensed under a
+permissive attribution license (see the SCOWL/en_US dictionary README for
+full text); redistribution with attribution is permitted.
+--------------------------------------------------------------------------------

@@ -45,4 +45,7 @@ public static class EditorCommands
     public static readonly RoutedUICommand Replace = Create("Replace", Key.H, ModifierKeys.Control);
     public static readonly RoutedUICommand FindNext = Create("FindNext", Key.F3);
     public static readonly RoutedUICommand FindPrevious = Create("FindPrevious", Key.F3, ModifierKeys.Shift);
+
+    // Palette
+    public static readonly RoutedUICommand CommandPalette = Create("CommandPalette", Key.P, ModifierKeys.Control | ModifierKeys.Shift);
 }

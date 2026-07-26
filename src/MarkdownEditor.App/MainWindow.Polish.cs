@@ -89,6 +89,11 @@ public partial class MainWindow
         _autosaveTimer.Start();
     }
 
+    /// <summary>
+    /// Autosaves the active tab only. With multiple tabs open, unsaved changes in background
+    /// tabs are not separately recovered after a crash - a scoped-down v1 for this feature;
+    /// the active tab (the one the user was most likely working in) is still protected.
+    /// </summary>
     private void WriteAutosave()
     {
         try
@@ -131,9 +136,19 @@ public partial class MainWindow
         {
             try
             {
-                SetEditorText(File.ReadAllText(AutosavePath));
-                _vm.NewDocument();
-                _vm.MarkDirty();
+                string recovered = File.ReadAllText(AutosavePath);
+                var active = _vm.Documents.Active;
+
+                // Reuse the still-pristine initial tab rather than leaving an unwanted blank
+                // tab open alongside the recovered one.
+                bool isPristineInitialTab = _vm.Documents.Count == 1 && active is not null &&
+                    active.FilePath is null && active.Text.Length == 0 && !active.IsDirty;
+
+                var doc = isPristineInitialTab ? active! : CreateTab();
+                Editor.Text = recovered;
+                doc.MarkDirty();
+                _vm.RefreshForActiveTab();
+                RefreshTabStrip();
                 _ = RefreshPreviewAsync();
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)

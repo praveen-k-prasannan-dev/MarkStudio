@@ -115,6 +115,82 @@ public class MarkdownRendererTests
 
         act.Should().Throw<ArgumentNullException>();
     }
+
+    [Fact]
+    public void Inline_math_renders_as_mathjax_ready_delimiters()
+    {
+        string html = _renderer.ToHtml("Einstein: $E = mc^2$");
+
+        html.Should().Contain("math");
+        html.Should().Contain(@"E = mc^2");
+        html.Should().Contain(@"\(").And.Contain(@"\)");
+    }
+
+    [Fact]
+    public void Block_math_renders_as_mathjax_ready_display_delimiters()
+    {
+        const string markdown = """
+            $$
+            x = y + 1
+            $$
+            """;
+
+        string html = _renderer.ToHtml(markdown);
+
+        html.Should().Contain("math");
+        html.Should().Contain(@"\[").And.Contain(@"\]");
+    }
+
+    [Fact]
+    public void Mermaid_code_fence_renders_as_plain_mermaid_element()
+    {
+        const string markdown = """
+            ```mermaid
+            graph TD;
+            A-->B;
+            ```
+            """;
+
+        string html = _renderer.ToHtml(markdown);
+
+        html.Should().Contain("<pre class=\"mermaid\">");
+        html.Should().Contain("graph TD;");
+        html.Should().Contain("A-->B;");
+        html.Should().NotContain("language-mermaid");
+        html.Should().NotContain("<code");
+    }
+
+    [Fact]
+    public void Mermaid_block_unescapes_html_entities_back_to_raw_diagram_syntax()
+    {
+        const string markdown = """
+            ```mermaid
+            graph TD;
+            A-->B;
+            ```
+            """;
+
+        string html = _renderer.ToHtml(markdown);
+
+        // Markdig HTML-escapes fenced code content by default (e.g. "-->" contains no special
+        // chars, but this guards against future syntax that does, such as A<-->B).
+        html.Should().NotContain("&gt;").And.NotContain("&lt;");
+    }
+
+    [Fact]
+    public void Other_fenced_languages_are_unaffected_by_mermaid_handling()
+    {
+        const string markdown = """
+            ```csharp
+            var x = 1;
+            ```
+            """;
+
+        string html = _renderer.ToHtml(markdown);
+
+        html.Should().Contain("language-csharp");
+        html.Should().NotContain("class=\"mermaid\"");
+    }
 }
 
 public class HtmlDocumentBuilderTests
@@ -143,5 +219,21 @@ public class HtmlDocumentBuilderTests
     public void BuildPage_uses_utf8_charset()
     {
         HtmlDocumentBuilder.BuildPage("<p/>", "", "t").Should().Contain("charset=\"utf-8\"");
+    }
+
+    [Fact]
+    public void BuildPage_includes_extra_head_html_when_provided()
+    {
+        var page = HtmlDocumentBuilder.BuildPage("<p/>", "", "t", extraHeadHtml: "<script src=\"lib.js\"></script>");
+
+        page.Should().Contain("<script src=\"lib.js\"></script>");
+    }
+
+    [Fact]
+    public void BuildPage_omits_nothing_extra_when_extra_head_html_is_default()
+    {
+        var page = HtmlDocumentBuilder.BuildPage("<p/>", "", "t");
+
+        page.Should().NotContain("<script");
     }
 }

@@ -17,6 +17,7 @@ public partial class MainWindow : Window
     private const string FileDialogFilter =
         "Markdown files (*.md;*.markdown)|*.md;*.markdown|Text files (*.txt)|*.txt|All files (*.*)|*.*";
     private const string PreviewHost = "preview.local";
+    private const string AssetsHost = "app-assets.local";
 
     private readonly MainViewModel _vm = new();
     private readonly MarkdownRenderer _renderer = new();
@@ -49,6 +50,7 @@ public partial class MainWindow : Window
 
         InitializeRibbon();
         InitializeTableEditing();
+        InitializeSpellCheck();
         ApplySettings();
 
         Loaded += MainWindow_Loaded;
@@ -61,9 +63,9 @@ public partial class MainWindow : Window
 
         var args = Environment.GetCommandLineArgs();
         if (args.Length > 1 && File.Exists(args[1]))
-            OpenFile(args[1]);
+            OpenFileIntoTab(args[1]);
         else
-            await RefreshPreviewAsync();
+            CreateTab();
 
         OfferRecovery();
         StartAutosave();
@@ -82,6 +84,11 @@ public partial class MainWindow : Window
 
             Preview.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
             Preview.CoreWebView2.Settings.AreDevToolsEnabled = false;
+
+            // Local-only host for bundled preview libraries (Mermaid, MathJax) - no network access.
+            Preview.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                AssetsHost, Path.Combine(AppContext.BaseDirectory, "Assets"), CoreWebView2HostResourceAccessKind.Allow);
+
             Preview.CoreWebView2.NavigationCompleted += async (_, _) =>
             {
                 if (_pendingScrollY > 0)
@@ -127,6 +134,8 @@ public partial class MainWindow : Window
         string text = Editor.Text;
         _vm.SyncText(text);
         UpdateOutline(text);
+        RefreshTabStrip(); // keep the tab's title/dirty-dot current as the user types
+        RescanSpelling(text);
 
         if (!_webViewReady)
             return;
@@ -144,8 +153,30 @@ public partial class MainWindow : Window
 
         string? baseHref = MapDocumentFolder();
         string body = _renderer.ToHtml(text);
-        string page = HtmlDocumentBuilder.BuildPage(body, _css, _vm.DocumentTitle, baseHref);
+        string extraHead = BuildExtraHeadScripts(body);
+        string page = HtmlDocumentBuilder.BuildPage(body, _css, _vm.DocumentTitle, baseHref, extraHead);
         Preview.NavigateToString(page);
+    }
+
+    /// <summary>
+    /// Loads Mermaid/MathJax only when the document actually uses them - both are multi-megabyte
+    /// scripts, and re-loading them on every keystroke's preview refresh would make typing feel
+    /// sluggish for documents that never reference diagrams or math.
+    /// </summary>
+    private static string BuildExtraHeadScripts(string bodyHtml)
+    {
+        var scripts = new System.Text.StringBuilder();
+
+        if (bodyHtml.Contains("class=\"mermaid\"", StringComparison.Ordinal))
+        {
+            scripts.Append($"<script src=\"https://{AssetsHost}/lib/mermaid.min.js\"></script>");
+            scripts.Append("<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'strict' });</script>");
+        }
+
+        if (bodyHtml.Contains("class=\"math\"", StringComparison.Ordinal))
+            scripts.Append($"<script src=\"https://{AssetsHost}/lib/mathjax-tex-svg.js\"></script>");
+
+        return scripts.ToString();
     }
 
     /// <summary>Maps the document's folder to a virtual host so relative image paths resolve.</summary>
@@ -175,23 +206,13 @@ public partial class MainWindow : Window
 
     // ---------- File handling ----------
 
-    private void New_Executed(object sender, ExecutedRoutedEventArgs e)
-    {
-        if (!ConfirmDiscardChanges())
-            return;
-        SetEditorText("");
-        _vm.NewDocument();
-        _ = RefreshPreviewAsync();
-    }
+    private void New_Executed(object sender, ExecutedRoutedEventArgs e) => CreateTab();
 
     private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
     {
-        if (!ConfirmDiscardChanges())
-            return;
-
         var dialog = new OpenFileDialog { Filter = FileDialogFilter };
         if (dialog.ShowDialog(this) == true)
-            OpenFile(dialog.FileName);
+            OpenFileIntoTab(dialog.FileName);
     }
 
     private void Save_Executed(object sender, ExecutedRoutedEventArgs e) => SaveDocument();
@@ -199,22 +220,6 @@ public partial class MainWindow : Window
     private void SaveAs_Executed(object sender, ExecutedRoutedEventArgs e) => SaveDocumentAs();
 
     private void Exit_Click(object sender, RoutedEventArgs e) => Close();
-
-    private void OpenFile(string path)
-    {
-        try
-        {
-            string text = _vm.LoadFile(path);
-            SetEditorText(text);
-            _vm.DocumentLoaded(path, text);
-            _ = RefreshPreviewAsync();
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            MessageBox.Show(this, $"Could not open the file:\n{ex.Message}",
-                "Open failed", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
 
     private bool SaveDocument()
     {
@@ -242,6 +247,7 @@ public partial class MainWindow : Window
         {
             _vm.Save(path, Editor.Text);
             DeleteAutosave(); // the draft is no longer newer than the file on disk
+            RefreshTabStrip(); // the tab's title may have changed from "Untitled" to the file name
             _ = RefreshPreviewAsync(); // re-render: the base href may have changed with the folder
             return true;
         }
@@ -253,24 +259,6 @@ public partial class MainWindow : Window
         }
     }
 
-    /// <summary>Returns true if it is OK to discard/replace the current document.</summary>
-    private bool ConfirmDiscardChanges()
-    {
-        if (!_vm.IsDirty)
-            return true;
-
-        var choice = MessageBox.Show(this,
-            $"Do you want to save changes to {_vm.DocumentTitle}?",
-            "Unsaved changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-
-        return choice switch
-        {
-            MessageBoxResult.Yes => SaveDocument(),
-            MessageBoxResult.No => true,
-            _ => false,
-        };
-    }
-
     private void SetEditorText(string text)
     {
         _suppressTextEvents = true;
@@ -278,13 +266,32 @@ public partial class MainWindow : Window
         _suppressTextEvents = false;
     }
 
+    /// <summary>Checks every open tab for unsaved changes before the app closes.</summary>
     private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
     {
-        if (!ConfirmDiscardChanges())
+        // Snapshot: CloseTab-style saving below can change which documents exist as we go.
+        foreach (var doc in _vm.Documents.Documents.ToList())
         {
-            e.Cancel = true;
-            return;
+            if (!doc.IsDirty)
+                continue;
+
+            SwitchToDocument(doc);
+            var choice = MessageBox.Show(this,
+                $"Do you want to save changes to {doc.Title}?",
+                "Unsaved changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+            if (choice == MessageBoxResult.Cancel)
+            {
+                e.Cancel = true;
+                return;
+            }
+            if (choice == MessageBoxResult.Yes && !SaveDocument())
+            {
+                e.Cancel = true;
+                return;
+            }
         }
+
         DeleteAutosave();
         SaveSettings();
     }
@@ -304,11 +311,7 @@ public partial class MainWindow : Window
         {
             var item = new MenuItem { Header = path.Replace("_", "__") };
             string captured = path;
-            item.Click += (_, _) =>
-            {
-                if (ConfirmDiscardChanges())
-                    OpenFile(captured);
-            };
+            item.Click += (_, _) => OpenFileIntoTab(captured);
             RecentMenu.Items.Add(item);
         }
     }
@@ -331,7 +334,6 @@ public partial class MainWindow : Window
             InsertDroppedImage(files[0]);
             return;
         }
-        if (ConfirmDiscardChanges())
-            OpenFile(files[0]);
+        OpenFileIntoTab(files[0]);
     }
 }

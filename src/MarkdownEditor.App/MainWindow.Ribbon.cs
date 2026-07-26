@@ -45,6 +45,7 @@ public partial class MainWindow
                 bool inTable = TableEditor.FindTableBounds(GetNormalizedLines(), GetCaretPosition().Line) is not null;
                 TableContextMenu.Visibility = inTable ? Visibility.Visible : Visibility.Collapsed;
                 TableContextSeparator.Visibility = inTable ? Visibility.Visible : Visibility.Collapsed;
+                UpdateSpellingContextMenu();
 
                 menu.PlacementTarget = Editor;
                 menu.IsOpen = true;
@@ -55,11 +56,18 @@ public partial class MainWindow
         // AvalonEdit intercepts Ctrl+I internally (historically equivalent to the Tab character
         // in many text-editing controls), which shadows the Italic RoutedUICommand's own key
         // gesture before it ever fires. Handle it explicitly and mark it handled to pre-empt that.
+        // Ctrl+Shift+P (command palette) is similarly swallowed while the editor has focus, so it
+        // gets the same explicit-handler treatment rather than relying on the implicit gesture.
         Editor.PreviewKeyDown += (_, e) =>
         {
             if (e.Key == Key.I && Keyboard.Modifiers == ModifierKeys.Control)
             {
                 ApplyEdit(InlineFormatter.Toggle(GetSelection(), InlineFormatter.Italic));
+                e.Handled = true;
+            }
+            else if (e.Key == Key.P && Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                OpenCommandPalette();
                 e.Handled = true;
             }
         };

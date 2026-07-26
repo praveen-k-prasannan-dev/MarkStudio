@@ -7,7 +7,15 @@ public sealed class DocumentState
     public string Text { get; private set; } = "";
     public bool IsDirty { get; private set; }
 
-    public string Title => FilePath is null ? "Untitled" : Path.GetFileName(FilePath);
+    /// <summary>
+    /// Set by <see cref="DocumentManager"/> to disambiguate multiple unsaved tabs
+    /// ("Untitled", "Untitled 2", "Untitled 3", ...). 0/1 both mean the plain "Untitled".
+    /// </summary>
+    public int UntitledNumber { get; set; }
+
+    public string Title => FilePath is null
+        ? (UntitledNumber > 1 ? $"Untitled {UntitledNumber}" : "Untitled")
+        : Path.GetFileName(FilePath);
 
     /// <summary>Flags unsaved changes without the cost of syncing the full text (used per keystroke).</summary>
     public void MarkDirty() => IsDirty = true;
