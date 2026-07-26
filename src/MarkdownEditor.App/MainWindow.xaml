@@ -407,6 +407,16 @@
                         <MenuItem Header="_Bold" Command="{x:Static local:EditorCommands.Bold}" InputGestureText="Ctrl+B" />
                         <MenuItem Header="_Italic" Command="{x:Static local:EditorCommands.Italic}" InputGestureText="Ctrl+I" />
                         <MenuItem Header="Insert _Link…" Command="{x:Static local:EditorCommands.InsertLink}" InputGestureText="Ctrl+K" />
+                        <Separator x:Name="TableContextSeparator" Visibility="Collapsed" />
+                        <MenuItem x:Name="TableContextMenu" Header="_Table" Visibility="Collapsed">
+                            <MenuItem Header="Insert Row Above" Click="InsertRowAbove_Click" />
+                            <MenuItem Header="Insert Row Below" Click="InsertRowBelow_Click" />
+                            <MenuItem Header="Delete Row" Click="DeleteRow_Click" />
+                            <Separator />
+                            <MenuItem Header="Insert Column Left" Click="InsertColumnLeft_Click" />
+                            <MenuItem Header="Insert Column Right" Click="InsertColumnRight_Click" />
+                            <MenuItem Header="Delete Column" Click="DeleteColumn_Click" />
+                        </MenuItem>
                         <Separator />
                         <MenuItem Header="Select _All" Click="SelectAll_Click" InputGestureText="Ctrl+A" />
                     </ContextMenu>

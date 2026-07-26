@@ -42,8 +42,24 @@ public partial class MainWindow
         {
             if (Editor.ContextMenu is { } menu)
             {
+                bool inTable = TableEditor.FindTableBounds(GetNormalizedLines(), GetCaretPosition().Line) is not null;
+                TableContextMenu.Visibility = inTable ? Visibility.Visible : Visibility.Collapsed;
+                TableContextSeparator.Visibility = inTable ? Visibility.Visible : Visibility.Collapsed;
+
                 menu.PlacementTarget = Editor;
                 menu.IsOpen = true;
+                e.Handled = true;
+            }
+        };
+
+        // AvalonEdit intercepts Ctrl+I internally (historically equivalent to the Tab character
+        // in many text-editing controls), which shadows the Italic RoutedUICommand's own key
+        // gesture before it ever fires. Handle it explicitly and mark it handled to pre-empt that.
+        Editor.PreviewKeyDown += (_, e) =>
+        {
+            if (e.Key == Key.I && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                ApplyEdit(InlineFormatter.Toggle(GetSelection(), InlineFormatter.Italic));
                 e.Handled = true;
             }
         };
