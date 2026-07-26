@@ -11,6 +11,7 @@ public partial class CommandPaletteWindow : Window
 
     private readonly IReadOnlyList<Entry> _allEntries;
     private IReadOnlyList<Entry> _filtered;
+    private bool _closing;
 
     public CommandPaletteWindow(IReadOnlyList<Entry> entries)
     {
@@ -43,7 +44,7 @@ public partial class CommandPaletteWindow : Window
             case Key.Down: MoveSelection(1); e.Handled = true; break;
             case Key.Up: MoveSelection(-1); e.Handled = true; break;
             case Key.Enter: ExecuteSelected(); e.Handled = true; break;
-            case Key.Escape: Close(); e.Handled = true; break;
+            case Key.Escape: CloseOnce(); e.Handled = true; break;
         }
     }
 
@@ -60,16 +61,26 @@ public partial class CommandPaletteWindow : Window
     {
         if (ResultsList.SelectedIndex < 0 || ResultsList.SelectedIndex >= _filtered.Count)
         {
-            Close();
+            CloseOnce();
             return;
         }
         var entry = _filtered[ResultsList.SelectedIndex];
-        Close();
+        CloseOnce();
         entry.Execute();
     }
 
     private void ResultsList_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) =>
         ExecuteSelected();
 
-    private void Window_Deactivated(object sender, EventArgs e) => Close();
+    private void Window_Deactivated(object sender, EventArgs e) => CloseOnce();
+
+    // Close() itself triggers Deactivated as part of its teardown, and calling Close() again
+    // while already closing throws - so every close path must funnel through this guard.
+    private void CloseOnce()
+    {
+        if (_closing)
+            return;
+        _closing = true;
+        Close();
+    }
 }
