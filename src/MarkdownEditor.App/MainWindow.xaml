@@ -69,6 +69,7 @@
         <CommandBinding Command="{x:Static local:EditorCommands.FindNext}" Executed="FindNext_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.FindPrevious}" Executed="FindPrevious_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.CommandPalette}" Executed="OpenCommandPalette_Executed" />
+        <CommandBinding Command="{x:Static local:EditorCommands.ToggleFocusMode}" Executed="ToggleFocusMode_Executed" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -86,10 +87,12 @@
         </Grid.RowDefinitions>
 
         <!-- Menu -->
-        <Menu Grid.Row="0">
+        <Menu x:Name="MainMenu" Grid.Row="0">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" Command="New" InputGestureText="Ctrl+N" />
+                <MenuItem Header="New From _Template…" Click="NewFromTemplate_Click" />
                 <MenuItem Header="_Open…" Command="Open" InputGestureText="Ctrl+O" />
+                <MenuItem Header="Open _Folder…" Click="OpenFolder_Click" />
                 <MenuItem x:Name="RecentMenu" Header="Open _Recent" SubmenuOpened="RecentMenu_SubmenuOpened">
                     <MenuItem Header="(empty)" IsEnabled="False" />
                 </MenuItem>
@@ -105,7 +108,7 @@
         </Menu>
 
         <!-- Ribbon toolbox -->
-        <TabControl Grid.Row="1" Padding="0" BorderThickness="0,0,0,1" Background="#FFFAFAFA">
+        <TabControl x:Name="RibbonTabControl" Grid.Row="1" Padding="0" BorderThickness="0,0,0,1" Background="#FFFAFAFA">
 
             <!-- HOME -->
             <TabItem Header="Home">
@@ -333,8 +336,45 @@
                             <StackPanel Orientation="Horizontal">
                                 <ToggleButton x:Name="OutlineToggle" Style="{StaticResource RibbonToggle}" Content="☰ Outline"
                                               Checked="OutlineToggle_Changed" Unchecked="OutlineToggle_Changed" Padding="8,2" />
+                                <ToggleButton x:Name="WorkspaceToggle" Style="{StaticResource RibbonToggle}" Content="🗀 Workspace"
+                                              Checked="WorkspaceToggle_Changed" Unchecked="WorkspaceToggle_Changed" Padding="8,2" />
                             </StackPanel>
                             <TextBlock Style="{StaticResource GroupLabel}" Text="Panels" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource RibbonGroup}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource RibbonButton}" Command="{x:Static local:EditorCommands.ToggleFocusMode}"
+                                        ToolTip="Distraction-free writing: hides the ribbon, tabs, and status bar (F11)" Padding="8,2">🎯 Focus Mode</Button>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource GroupLabel}" Text="Focus" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource RibbonGroup}" BorderThickness="0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton x:Name="StatsDropdownButton" Style="{StaticResource RibbonToggle}" Padding="8,2"
+                                              ToolTip="Writing stats" Checked="StatsDropdownButton_Checked">
+                                    <TextBlock Text="📊 Stats" />
+                                </ToggleButton>
+                                <Popup x:Name="StatsPopup"
+                                       PlacementTarget="{Binding ElementName=StatsDropdownButton}"
+                                       Placement="Bottom"
+                                       IsOpen="{Binding IsChecked, ElementName=StatsDropdownButton, Mode=TwoWay}"
+                                       StaysOpen="True">
+                                    <Border Background="White" BorderBrush="#FFCCCCCC" BorderThickness="1" Padding="12">
+                                        <StackPanel MinWidth="180">
+                                            <TextBlock x:Name="StatsTodayLabel" Margin="0,0,0,4" />
+                                            <TextBlock x:Name="StatsWeekLabel" Margin="0,0,0,4" />
+                                            <TextBlock x:Name="StatsStreakLabel" />
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource GroupLabel}" Text="Writing Stats" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -348,6 +388,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button x:Name="ExportPdfButton" Style="{StaticResource RibbonButton}" Click="ExportPdf_Click" ToolTip="Export the document as PDF" Padding="8,2">📄 Export to PDF…</Button>
                                 <Button x:Name="ExportHtmlButton" Style="{StaticResource RibbonButton}" Click="ExportHtml_Click" ToolTip="Export as standalone HTML" Padding="8,2">🌐 Export to HTML…</Button>
+                                <Button x:Name="ExportWordButton" Style="{StaticResource RibbonButton}" Click="ExportWord_Click" ToolTip="Export as a Word document" Padding="8,2">📝 Export to Word…</Button>
                                 <Button x:Name="PrintButton" Style="{StaticResource RibbonButton}" Click="Print_Click" ToolTip="Print (Ctrl+P)" Padding="8,2">🖨 Print…</Button>
                             </StackPanel>
                             <TextBlock Style="{StaticResource GroupLabel}" Text="Export" />
@@ -358,7 +399,7 @@
         </TabControl>
 
         <!-- Document tab strip -->
-        <Border Grid.Row="2" Background="#FFF3F3F3" BorderBrush="#FFDDDDDD" BorderThickness="0,0,0,1">
+        <Border x:Name="TabStripBorder" Grid.Row="2" Background="#FFF3F3F3" BorderBrush="#FFDDDDDD" BorderThickness="0,0,0,1">
             <DockPanel LastChildFill="False">
                 <StackPanel x:Name="TabStripPanel" Orientation="Horizontal" DockPanel.Dock="Left" />
                 <Button x:Name="NewTabButton" AutomationProperties.AutomationId="NewTabButton" DockPanel.Dock="Left" Content="+" Width="26" Height="26"
@@ -386,20 +427,50 @@
         <!-- Outline / editor / preview split -->
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="WorkspaceColumn" Width="0" />
                 <ColumnDefinition x:Name="OutlineColumn" Width="0" />
                 <ColumnDefinition x:Name="EditorColumn" Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition x:Name="PreviewColumn" Width="*" />
             </Grid.ColumnDefinitions>
 
+            <DockPanel x:Name="WorkspacePanel" Grid.Column="0" Background="#FFF7F7F7"
+                       LastChildFill="True">
+                <TextBox x:Name="WorkspaceSearchBox" DockPanel.Dock="Top" Margin="6"
+                         ToolTip="Search all files in this workspace"
+                         TextChanged="WorkspaceSearchBox_TextChanged" />
+                <Grid>
+                    <TreeView x:Name="WorkspaceTree" Background="Transparent" BorderThickness="0,0,1,0" BorderBrush="#FFDDDDDD"
+                              SelectedItemChanged="WorkspaceTree_SelectedItemChanged">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Name}" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+                    <ListBox x:Name="WorkspaceSearchResults" BorderThickness="0,0,1,0" BorderBrush="#FFDDDDDD"
+                             Visibility="Collapsed"
+                             MouseDoubleClick="WorkspaceSearchResults_MouseDoubleClick">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="2">
+                                    <TextBlock Text="{Binding DisplayPath}" FontWeight="Bold" FontSize="11" />
+                                    <TextBlock Text="{Binding LineText}" TextTrimming="CharacterEllipsis" FontSize="11" Foreground="#FF555555" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </DockPanel>
+
             <ListBox x:Name="OutlineList"
-                     Grid.Column="0"
+                     Grid.Column="1"
                      BorderThickness="0,0,1,0"
                      BorderBrush="#FFDDDDDD"
                      SelectionChanged="OutlineList_SelectionChanged" />
 
             <avalonEdit:TextEditor x:Name="Editor"
-                                   Grid.Column="1"
+                                   Grid.Column="2"
                                    FontFamily="Cascadia Code, Consolas"
                                    FontSize="14"
                                    ShowLineNumbers="True"
@@ -438,7 +509,7 @@
             </avalonEdit:TextEditor>
 
             <GridSplitter x:Name="Splitter"
-                          Grid.Column="2"
+                          Grid.Column="3"
                           Width="5"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
@@ -446,12 +517,21 @@
                           ShowsPreview="False" />
 
             <wv2:WebView2 x:Name="Preview"
-                          Grid.Column="3"
+                          Grid.Column="4"
                           DefaultBackgroundColor="White" />
+
+            <Button x:Name="ExitFocusModeButton"
+                    Grid.Column="0" Grid.ColumnSpan="5"
+                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0,10,16,0" Padding="10,4"
+                    Background="#DD333333" Foreground="White" BorderThickness="0"
+                    Focusable="False" Visibility="Collapsed"
+                    Content="Exit Focus Mode (Esc)"
+                    Command="{x:Static local:EditorCommands.ToggleFocusMode}" />
         </Grid>
 
         <!-- Status bar -->
-        <StatusBar Grid.Row="5">
+        <StatusBar x:Name="MainStatusBar" Grid.Row="5">
             <StatusBarItem>
                 <TextBlock Text="{Binding StatusInfo}" />
             </StatusBarItem>

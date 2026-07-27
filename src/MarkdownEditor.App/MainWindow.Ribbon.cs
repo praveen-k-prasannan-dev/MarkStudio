@@ -577,6 +577,7 @@ public partial class MainWindow
 
     private void ExportPdf_Click(object sender, RoutedEventArgs e) => ExportPdf();
     private void ExportHtml_Click(object sender, RoutedEventArgs e) => ExportHtml();
+    private void ExportWord_Click(object sender, RoutedEventArgs e) => ExportWord();
     private void Print_Click(object sender, RoutedEventArgs e) => PrintPreview();
     private void Print_Executed(object sender, ExecutedRoutedEventArgs e) => PrintPreview();
 }

@@ -48,4 +48,7 @@ public static class EditorCommands
 
     // Palette
     public static readonly RoutedUICommand CommandPalette = Create("CommandPalette", Key.P, ModifierKeys.Control | ModifierKeys.Shift);
+
+    // View
+    public static readonly RoutedUICommand ToggleFocusMode = Create("ToggleFocusMode", Key.F11);
 }

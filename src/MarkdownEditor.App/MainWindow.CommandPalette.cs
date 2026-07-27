@@ -23,7 +23,9 @@ public partial class MainWindow
         var entries = new List<CommandPaletteWindow.Entry>
         {
             new("New Document", () => ApplicationCommands.New.Execute(null, Editor)),
+            new("New From Template…", () => NewFromTemplate_Click(this, new RoutedEventArgs())),
             new("Open File…", () => ApplicationCommands.Open.Execute(null, Editor)),
+            new("Open Folder…", () => OpenFolder_Click(this, new RoutedEventArgs())),
             new("Save", () => ApplicationCommands.Save.Execute(null, Editor)),
             new("Save As…", () => ApplicationCommands.SaveAs.Execute(null, Editor)),
 
@@ -76,9 +78,12 @@ public partial class MainWindow
             new("Increase Editor Font Size", () => FontSizeUp_Click(this, new RoutedEventArgs())),
             new("Decrease Editor Font Size", () => FontSizeDown_Click(this, new RoutedEventArgs())),
             new("Toggle Document Outline", () => OutlineToggle.IsChecked = !(OutlineToggle.IsChecked ?? false)),
+            new("Toggle Focus Mode", ToggleFocusMode),
+            new("Show Writing Stats", () => StatsDropdownButton.IsChecked = true),
 
             new("Export to PDF…", ExportPdf),
             new("Export to HTML…", ExportHtml),
+            new("Export to Word…", ExportWord),
             new("Print…", PrintPreview),
 
             new("About MarkStudio Editor", () => About_Click(this, new RoutedEventArgs())),

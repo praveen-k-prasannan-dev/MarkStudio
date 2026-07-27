@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using MarkdownEditor.App.Views;
+using MarkdownEditor.Core.Export;
 using MarkdownEditor.Core.Markdown;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
@@ -112,6 +113,36 @@ public partial class MainWindow
         {
             MessageBox.Show(this, $"HTML export failed:\n{ex.Message}",
                 "Export to HTML", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void ExportWord()
+    {
+        var saveDialog = new SaveFileDialog
+        {
+            Filter = "Word documents (*.docx)|*.docx",
+            DefaultExt = ".docx",
+            FileName = Path.ChangeExtension(_vm.DocumentTitle, ".docx"),
+        };
+        if (saveDialog.ShowDialog(this) != true)
+            return;
+
+        try
+        {
+            using var stream = File.Create(saveDialog.FileName);
+            DocxExporter.Export(Editor.Text, stream);
+            stream.Close();
+
+            var open = MessageBox.Show(this,
+                $"Word document exported to:\n{saveDialog.FileName}\n\nOpen it now?",
+                "Export to Word", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (open == MessageBoxResult.Yes)
+                Process.Start(new ProcessStartInfo(saveDialog.FileName) { UseShellExecute = true });
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            MessageBox.Show(this, $"Word export failed:\n{ex.Message}",
+                "Export to Word", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 

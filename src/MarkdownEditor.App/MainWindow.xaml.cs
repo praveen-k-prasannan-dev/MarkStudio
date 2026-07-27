@@ -50,7 +50,10 @@ public partial class MainWindow : Window
 
         InitializeRibbon();
         InitializeTableEditing();
+        InitializeSnippets();
         InitializeSpellCheck();
+        InitializeFocusMode();
+        InitializeWorkspace();
         ApplySettings();
 
         Loaded += MainWindow_Loaded;
@@ -96,6 +99,8 @@ public partial class MainWindow : Window
                         $"window.scrollTo(0, {_pendingScrollY.ToString(CultureInfo.InvariantCulture)});");
             };
 
+            Preview.CoreWebView2.NavigationStarting += Preview_NavigationStarting;
+
             _webViewReady = true;
         }
         catch (WebView2RuntimeNotFoundException)
@@ -136,6 +141,7 @@ public partial class MainWindow : Window
         UpdateOutline(text);
         RefreshTabStrip(); // keep the tab's title/dirty-dot current as the user types
         RescanSpelling(text);
+        RecordWritingStatsSample(text);
 
         if (!_webViewReady)
             return;
@@ -294,6 +300,7 @@ public partial class MainWindow : Window
 
         DeleteAutosave();
         SaveSettings();
+        SaveWritingStats();
     }
 
     // ---------- Recent files ----------
