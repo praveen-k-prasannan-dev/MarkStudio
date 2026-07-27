@@ -34,6 +34,11 @@
 - **Multiple documents** — open several files at once in tabs, each with its own undo history and dirty state; switching tabs is instant.
 - **Spell checking** — misspelled words get a dotted red underline as you type; right-click for suggestions or to add a word to the dictionary.
 - **Mermaid diagrams & math formulas** — fenced ` ```mermaid ` blocks and `$LaTeX$` render live in the preview, loaded only when a document actually uses them.
+- **Focus mode** (`F11`) — hides the ribbon, tab strip, and status bar and centers the editor for distraction-free writing.
+- **Writing stats** — tracks words written per day, a trailing 7-day total, and a writing streak.
+- **Templates & snippets** — start a new document from a template (Meeting Notes, README, Changelog…), or type a trigger word like `todo`/`table`/`meeting`/`code` and press `Tab` to expand it.
+- **Workspace mode** — open a folder as a sidebar file tree with instant search across every Markdown file in it; clicking a relative link to another `.md` file in the preview opens it in a new tab instead of navigating away.
+- **Export to Word** — native `.docx` export (headings, formatting, links, lists, tables) built directly from the Markdown structure, not a HTML round-trip.
 - **Everyday comfort** — recent files, find & replace, reading-time estimate, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
 
 ## Install
@@ -46,7 +51,7 @@
 
 MarkStudio Editor also ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
-1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.2.0-win-x64.zip` (~65 MB).
+1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.3.0-win-x64.zip` (~68 MB).
 2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
    Keep the extracted files together: `MarkStudioEditor.exe` and the `Assets` folder belong side by side.
 3. Double-click **`MarkStudioEditor.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
@@ -125,14 +130,60 @@ Every formatting button is a **toggle**: select text and click Bold to make it `
 | Layout | **Split** / **Editor only** / **Preview only** |
 | Preview | Sync scrolling on/off · **Theme**: Light / Dark / Custom… (pick any `.css` file, remembered across restarts) |
 | Editor font | A− / A+ text size |
-| Panels | ☰ **Outline** — a headings tree; click any heading to jump there |
+| Panels | ☰ **Outline** — a headings tree; click any heading to jump there · 🗀 **Workspace** — a folder file tree with search |
+| Focus | 🎯 **Focus Mode** (`F11`) — distraction-free writing |
+| Writing Stats | 📊 **Stats** — today's word count, last 7 days, and your writing streak |
 
 **Export** — output:
+
+![The Export tab](docs/images/export-tab.png)
+
 | Group | Controls |
 |-------|----------|
-| Export | **Export to PDF…** (page size, orientation, margins, backgrounds) · Export to HTML · Print `Ctrl+P` |
+| Export | **Export to PDF…** (page size, orientation, margins, backgrounds) · **Export to Word…** (native `.docx`) · Export to HTML · Print `Ctrl+P` |
 
 The PDF is rendered by the same engine as the preview, so **what you see is exactly what you get**.
+
+### Focus mode
+
+![Focus mode: ribbon, tabs, and status bar hidden, editor centered](docs/images/focus-mode.png)
+
+`F11` (or View tab → Focus Mode) hides the ribbon, document tabs, and status bar, and centers the editor in a comfortable column for distraction-free writing. A small **Exit Focus Mode** button appears in the corner; `Esc`, `F11` again, or that button all restore your previous layout exactly (view mode, Outline/Workspace panel state, line numbers).
+
+### Writing stats
+
+![The writing stats popup: today's words, last 7 days, and streak](docs/images/writing-stats.png)
+
+View tab → **Stats** shows how many words you've written today, over the last 7 days, and your current daily writing streak. "Words written" only counts net *increases* in word count sampled as you type, so deleting text doesn't count against you — stats are saved between sessions.
+
+### Templates & snippets
+
+![The New From Template picker](docs/images/template-dialog.png)
+
+**File → New From Template…** opens a picker with ready-made starting points: Meeting Notes, README, Changelog, Blog Post, and To-Do List. Pick one (or double-click it) and a new tab opens pre-filled with that structure.
+
+For quicker inline expansion, type one of these trigger words on its own and press `Tab`:
+
+| Trigger | Expands to |
+|---------|-----------|
+| `todo` | A task-list checkbox, ready to type |
+| `table` | A 3-column table skeleton |
+| `meeting` | A full Meeting Notes structure (Date/Attendees/Agenda/Action Items) |
+| `code` | A fenced code block with the cursor inside |
+
+Snippet expansion only triggers on Tab when the caret isn't inside a table (where Tab still means "next cell", exactly as before).
+
+### Workspace mode
+
+![The workspace sidebar: search box and file tree](docs/images/workspace-panel.png)
+
+**File → Open Folder…** (or View tab → Workspace) scans a folder into a sidebar file tree of just its Markdown files — noise folders like `.git`, `node_modules`, `bin`, and `obj` are skipped automatically. Click a file to open it in a new tab. Type in the search box above the tree to instantly search every file in the folder line-by-line; double-click a result to jump straight to that line.
+
+Clicking a relative link to another `.md` file in the **preview pane** (e.g. `[notes](other.md)`) now opens that file in a new tab instead of navigating the preview away from your rendered document. Links to `https://` URLs open in your default browser instead.
+
+### Export to Word
+
+Export tab → **Export to Word…** builds a native `.docx` file directly from the document's Markdown structure (not by converting the HTML preview), so headings, **bold**/*italic*/~~strikethrough~~/`code`, links, bullet/numbered/task lists, blockquotes, code blocks, and tables all map onto real Word formatting. Two deliberate v1 simplifications: images become a `[Image: alt text]` placeholder rather than being embedded, and lists render as literal bullet/number/checkbox text rather than Word's native auto-numbering.
 
 ### Interactive table editing
 
@@ -181,7 +232,7 @@ While you have unsaved changes, a recovery draft is written every 60 seconds. If
 git clone https://github.com/praveen-k-prasannan-dev/MarkStudio.git
 cd MarkStudio
 dotnet build                                   # requires .NET SDK 8 or newer
-dotnet test                                    # 135 unit tests
+dotnet test                                    # 189 unit tests
 dotnet run --project src/MarkdownEditor.App    # run the app
 .\scripts\publish.ps1                          # build the redistributable bundle + zip
 ```
@@ -193,11 +244,13 @@ MarkStudio/                                 (repository)
 ├── src/
 │   ├── MarkdownEditor.Core/            # ALL logic — a UI-free .NET 8 class library
 │   │   ├── Markdown/                   #   Markdig pipeline → HTML, full-page builder, Mermaid/math wiring
-│   │   ├── Editing/                    #   inline/block/list/table formatters, table cell navigation
-│   │   ├── Documents/                  #   document state/statistics, DocumentManager (multi-tab)
+│   │   ├── Editing/                    #   inline/block/list/table formatters, snippet expansion
+│   │   ├── Documents/                  #   document state/statistics, DocumentManager, templates, writing stats
 │   │   ├── Clipboard/                  #   CF_HTML clipboard formatter (Copy as HTML)
 │   │   ├── Palette/                    #   fuzzy matcher powering the command palette
 │   │   ├── Spelling/                   #   Hunspell-backed spell checker + Markdown-aware scanner
+│   │   ├── Workspace/                  #   folder → file-tree scanning, cross-file text search
+│   │   ├── Export/                     #   Markdig AST → native .docx via the OpenXML SDK
 │   │   └── Services/                   #   file I/O, recent-files list
 │   └── MarkdownEditor.App/             # WPF shell (thin — no business logic)
 │       ├── MainWindow.xaml(.cs)        #   window, editor, live preview, file handling
@@ -206,14 +259,18 @@ MarkStudio/                                 (repository)
 │       ├── MainWindow.Tabs.cs          #   multi-tab document management
 │       ├── MainWindow.CommandPalette.cs#   Ctrl+Shift+P command registry
 │       ├── MainWindow.SpellCheck.cs    #   spell-check scanning, underline decoration, suggestions
-│       ├── MainWindow.Export.cs        #   PDF/HTML export, print
+│       ├── MainWindow.FocusMode.cs     #   F11 distraction-free writing
+│       ├── MainWindow.WritingStats.cs  #   daily word-count tracking, streaks
+│       ├── MainWindow.Snippets.cs      #   Tab-to-expand snippets, New From Template
+│       ├── MainWindow.Workspace.cs     #   folder sidebar, cross-file search, cross-document links
+│       ├── MainWindow.Export.cs        #   PDF/HTML/Word export, print
 │       ├── MainWindow.Polish.cs        #   settings, autosave, drag-drop, About
 │       ├── ViewModels/                 #   MVVM view model (title, status bar)
-│       ├── Views/                      #   dialogs: link, image, table, PDF, splash, command palette
-│       ├── Services/                   #   settings store, diagnostic log
+│       ├── Views/                      #   dialogs: link, image, table, PDF, splash, command palette, templates
+│       ├── Services/                   #   settings store, writing-stats store, diagnostic log
 │       └── Assets/                     #   app icon, preview CSS themes, Mermaid/MathJax, dictionaries
 ├── tests/
-│   └── MarkdownEditor.Core.Tests/      # 135 xUnit tests for the Core library
+│   └── MarkdownEditor.Core.Tests/      # 189 xUnit tests for the Core library
 ├── scripts/publish.ps1                 # one-command redistributable bundle
 ├── BUILD_PLAN.md                       # the complete phased build plan (all checked ✓)
 └── SAMPLE.md                           # demo document exercising every feature
@@ -232,6 +289,7 @@ The architecture rule: **anything testable without a window lives in `MarkdownEd
 | Diagrams | [Mermaid](https://mermaid.js.org/) (bundled locally) |
 | Math typesetting | [MathJax](https://www.mathjax.org/) (bundled locally) |
 | Spell checking | [WeCantSpell.Hunspell](https://github.com/aarondandy/WeCantSpell.Hunspell) + LibreOffice `en_US` dictionary |
+| Word export | [DocumentFormat.OpenXml](https://github.com/dotnet/Open-XML-SDK) (Microsoft's OOXML SDK) |
 | MVVM | CommunityToolkit.Mvvm |
 | Tests | xUnit + FluentAssertions |
 
@@ -260,6 +318,8 @@ A few numbers worth noting:
 **Since v1.0.0:** the app shipped to the Microsoft Store, and development continued in the same conversational style, as three follow-up phases (Quick wins → Medium effort → Bigger features), each shipped as its own GitHub release, with the Store update deferred until all three land. v1.1.0 ("Quick wins" — interactive table editing, Copy as HTML, reading time, custom preview themes, plus a right-click context menu) added 18 new unit tests (90 total) and roughly 800 lines across 19 files, including two same-session bug fixes — a right-click menu that silently failed to open, and a Ctrl+I shortcut swallowed internally by the editor control — both root-caused and fixed within the conversation that found them.
 
 v1.2.0 ("Medium effort" — command palette, multi-tab documents, spell checking, and Mermaid/math rendering) added 45 new unit tests (135 total) and integrated four new libraries (WeCantSpell.Hunspell, a bundled Hunspell dictionary, Mermaid, and MathJax) without a single dependency conflict. One more same-session bug turned up during the developer's own manual test pass afterward: selecting a command from the palette crashed the app with a WPF re-entrancy error (`Close()` triggering its own `Deactivated` event, which called `Close()` a second time). Root-caused and fixed in the same conversation, with a guard flag added to make every close path idempotent.
+
+v1.3.0 ("Bigger features" — focus mode, writing stats, templates & snippets, workspace mode with cross-file search, and native Word export) closes out the three-phase plan, adding 54 new unit tests (189 total). The riskiest piece was Word export: rather than converting the HTML preview, it walks Markdig's parsed document structure directly into native OpenXML paragraphs, runs, and tables — a new library (`DocumentFormat.OpenXml`) integrated in the same session with no prior use in this codebase. One bug surfaced during self-testing: a "Writing Stats" popup silently failed to appear, root-caused to a WPF `Popup` with `StaysOpen="False"` closing itself immediately because it had no focusable content to hold onto — fixed by keeping the popup open until its own toggle button is clicked again. With all three phases shipped to GitHub, a consolidated update to the Microsoft Store (still at v1.0.0) is the natural next step.
 
 *This README — including its screenshots, captured by the model running the app itself — was, of course, also written by Claude.*
 
