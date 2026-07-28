@@ -39,6 +39,7 @@
 - **Templates & snippets** — start a new document from a template (Meeting Notes, README, Changelog…), or type a trigger word like `todo`/`table`/`meeting`/`code` and press `Tab` to expand it.
 - **Workspace mode** — open a folder as a sidebar file tree with instant search across every Markdown file in it; clicking a relative link to another `.md` file in the preview opens it in a new tab instead of navigating away.
 - **Export to Word** — native `.docx` export (headings, formatting, links, lists, tables) built directly from the Markdown structure, not a HTML round-trip.
+- **In-app Help** (`F1`) — a searchable manual covering every feature, plus complete Markdown, Mermaid (13 diagram types), and math syntax references, with live-rendered examples instead of static screenshots.
 - **Everyday comfort** — recent files, find & replace, reading-time estimate, autosave with crash recovery, drag-and-drop for documents *and* images, persistent settings, footnotes, emoji, task lists.
 
 ## Install
@@ -51,7 +52,7 @@
 
 MarkStudio Editor also ships as a **self-contained bundle** — the target PC needs **no Visual Studio and no .NET installation**.
 
-1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.3.0-win-x64.zip` (~68 MB).
+1. Go to the **[Releases page](https://github.com/praveen-k-prasannan-dev/MarkStudio/releases/latest)** and download `MarkStudioEditor-1.4.0-win-x64.zip` (~68 MB).
 2. Right-click the downloaded zip → **Extract All…** → choose any folder (e.g. `C:\Apps\MarkStudioEditor`).
    Keep the extracted files together: `MarkStudioEditor.exe` and the `Assets` folder belong side by side.
 3. Double-click **`MarkStudioEditor.exe`**. The first launch takes a few extra seconds while the bundled .NET runtime unpacks itself.
@@ -78,8 +79,28 @@ The title bar shows the current document name, a `●` marker when there are **u
 
 | Menu | Contents |
 |------|----------|
-| **File** | New (`Ctrl+N`), Open (`Ctrl+O`), **Open Recent** (last 10 files), Save (`Ctrl+S`), Save As (`Ctrl+Shift+S`), Exit |
-| **Help** | About MarkStudio Editor (version and credits) |
+| **File** | New (`Ctrl+N`), Open (`Ctrl+O`), **Open Recent** (last 10 files), Save (`Ctrl+S`), Save As (`Ctrl+Shift+S`), New From Template…, Open Folder…, Exit |
+| **Help** | MarkStudio Editor Help (`F1`), About MarkStudio Editor (version and credits) |
+
+### In-app Help
+
+![The Help window: topic tree, search box, and content pane](docs/images/help-window.png)
+
+`F1` (or **Help → MarkStudio Editor Help**) opens a searchable manual — a topic tree on the left, a search box that filters it instantly (matching both topic titles and the text inside them, so searching "row" finds the table row/column commands even though no topic title contains that word), and a content pane on the right.
+
+It covers every feature in this README: each ribbon tab, the right-click menu, the command palette, templates & snippets, workspace mode, spell checking, a full keyboard shortcuts table, and troubleshooting — plus three full reference sections:
+
+- **Markdown syntax** — headings, emphasis, lists, links/images, tables, code, blockquotes, rules, footnotes.
+- **Mermaid diagrams** — every diagram type the bundled library supports (flowchart, sequence, class, state, entity-relationship, Gantt, pie, user journey, git graph, mindmap, timeline, quadrant, requirement, and more), with every shape/arrow/option documented.
+- **Math formulas** — arithmetic through fractions, exponents, roots, Greek letters, named functions, sums/products/integrals/limits, matrices, sets/logic/relations, and a one-page symbol-to-LaTeX cheat sheet.
+
+![A Mermaid flowchart rendering live inside the Help window](docs/images/help-mermaid-live.png)
+
+The Help window renders its own content through the same Markdown pipeline as the live preview, so every Mermaid diagram and math formula shown as an example actually renders — it isn't a static picture.
+
+![Math formulas rendering live inside the Help window](docs/images/help-math-live.png)
+
+Clicking a link to another help topic navigates to it in place instead of leaving the window, and the whole window follows whichever preview theme (Light/Dark) you last picked.
 
 ### Multiple documents (tabs)
 
@@ -232,7 +253,7 @@ While you have unsaved changes, a recovery draft is written every 60 seconds. If
 git clone https://github.com/praveen-k-prasannan-dev/MarkStudio.git
 cd MarkStudio
 dotnet build                                   # requires .NET SDK 8 or newer
-dotnet test                                    # 189 unit tests
+dotnet test                                    # 203 unit tests
 dotnet run --project src/MarkdownEditor.App    # run the app
 .\scripts\publish.ps1                          # build the redistributable bundle + zip
 ```
@@ -251,6 +272,7 @@ MarkStudio/                                 (repository)
 │   │   ├── Spelling/                   #   Hunspell-backed spell checker + Markdown-aware scanner
 │   │   ├── Workspace/                  #   folder → file-tree scanning, cross-file text search
 │   │   ├── Export/                     #   Markdig AST → native .docx via the OpenXML SDK
+│   │   ├── Help/                       #   Help topic tree model, TOC loader, title+content search
 │   │   └── Services/                   #   file I/O, recent-files list
 │   └── MarkdownEditor.App/             # WPF shell (thin — no business logic)
 │       ├── MainWindow.xaml(.cs)        #   window, editor, live preview, file handling
@@ -264,13 +286,14 @@ MarkStudio/                                 (repository)
 │       ├── MainWindow.Snippets.cs      #   Tab-to-expand snippets, New From Template
 │       ├── MainWindow.Workspace.cs     #   folder sidebar, cross-file search, cross-document links
 │       ├── MainWindow.Export.cs        #   PDF/HTML/Word export, print
+│       ├── MainWindow.Help.cs          #   F1 / Help menu entry point
 │       ├── MainWindow.Polish.cs        #   settings, autosave, drag-drop, About
 │       ├── ViewModels/                 #   MVVM view model (title, status bar)
-│       ├── Views/                      #   dialogs: link, image, table, PDF, splash, command palette, templates
+│       ├── Views/                      #   dialogs: link, image, table, PDF, splash, command palette, templates, HelpWindow
 │       ├── Services/                   #   settings store, writing-stats store, diagnostic log
-│       └── Assets/                     #   app icon, preview CSS themes, Mermaid/MathJax, dictionaries
+│       └── Assets/                     #   app icon, preview CSS themes, Mermaid/MathJax, dictionaries, help/ (56 topic pages + toc.json)
 ├── tests/
-│   └── MarkdownEditor.Core.Tests/      # 189 xUnit tests for the Core library
+│   └── MarkdownEditor.Core.Tests/      # 203 xUnit tests for the Core library
 ├── scripts/publish.ps1                 # one-command redistributable bundle
 ├── BUILD_PLAN.md                       # the complete phased build plan (all checked ✓)
 └── SAMPLE.md                           # demo document exercising every feature
@@ -319,7 +342,9 @@ A few numbers worth noting:
 
 v1.2.0 ("Medium effort" — command palette, multi-tab documents, spell checking, and Mermaid/math rendering) added 45 new unit tests (135 total) and integrated four new libraries (WeCantSpell.Hunspell, a bundled Hunspell dictionary, Mermaid, and MathJax) without a single dependency conflict. One more same-session bug turned up during the developer's own manual test pass afterward: selecting a command from the palette crashed the app with a WPF re-entrancy error (`Close()` triggering its own `Deactivated` event, which called `Close()` a second time). Root-caused and fixed in the same conversation, with a guard flag added to make every close path idempotent.
 
-v1.3.0 ("Bigger features" — focus mode, writing stats, templates & snippets, workspace mode with cross-file search, and native Word export) closes out the three-phase plan, adding 54 new unit tests (189 total). The riskiest piece was Word export: rather than converting the HTML preview, it walks Markdig's parsed document structure directly into native OpenXML paragraphs, runs, and tables — a new library (`DocumentFormat.OpenXml`) integrated in the same session with no prior use in this codebase. One bug surfaced during self-testing: a "Writing Stats" popup silently failed to appear, root-caused to a WPF `Popup` with `StaysOpen="False"` closing itself immediately because it had no focusable content to hold onto — fixed by keeping the popup open until its own toggle button is clicked again. With all three phases shipped to GitHub, a consolidated update to the Microsoft Store (still at v1.0.0) is the natural next step.
+v1.3.0 ("Bigger features" — focus mode, writing stats, templates & snippets, workspace mode with cross-file search, and native Word export) closed out the originally-planned three-phase roadmap, adding 54 new unit tests (189 total). The riskiest piece was Word export: rather than converting the HTML preview, it walks Markdig's parsed document structure directly into native OpenXML paragraphs, runs, and tables — a new library (`DocumentFormat.OpenXml`) integrated in the same session with no prior use in this codebase. One bug surfaced during self-testing: a "Writing Stats" popup silently failed to appear, root-caused to a WPF `Popup` with `StaysOpen="False"` closing itself immediately because it had no focusable content to hold onto — fixed by keeping the popup open until its own toggle button is clicked again.
+
+A fourth phase followed: v1.4.0 adds the in-app Help window described above — 56 topic pages covering every feature plus full Markdown/Mermaid/math syntax references, rendered through the app's own Markdown pipeline so examples inside the help content genuinely render rather than being static pictures. This phase produced the most interesting bug of the project so far, precisely because it *wasn't* caught by the automated tests: the search box worked perfectly in every unit test, but had never received keyboard focus when the window opened, so a user typing immediately after pressing F1 was typing into nothing. It surfaced only once a human — the developer, doing his own pass over the finished feature — actually tried it; a second gap turned up the same way when he asked specifically whether "how do I insert a table row" was documented, and it was, but the search that was supposed to surface it only matched topic *titles*, not the text inside them, so "row" and "insert column" returned nothing despite the content being right there. Both were root-caused and fixed the same day they were reported, and 14 new unit tests were added to cover the fix (203 total). It's a small, concrete illustration of something worth stating plainly: AI-written tests are only as good as the scenarios someone thought to write, and a real person actually using the feature remains the check nothing else replaces.
 
 *This README — including its screenshots, captured by the model running the app itself — was, of course, also written by Claude.*
 

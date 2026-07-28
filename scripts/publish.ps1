@@ -5,7 +5,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
 $outDir = Join-Path $root 'dist\MarkStudioEditor'
-$version = '1.3.0'
+$version = '1.4.0'
 
 if (Test-Path $outDir) { Remove-Item $outDir -Recurse -Force }
 
