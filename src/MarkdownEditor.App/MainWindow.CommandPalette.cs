@@ -86,6 +86,7 @@ public partial class MainWindow
             new("Export to Word…", ExportWord),
             new("Print…", PrintPreview),
 
+            new("MarkStudio Editor Help", OpenHelp),
             new("About MarkStudio Editor", () => About_Click(this, new RoutedEventArgs())),
         };
 

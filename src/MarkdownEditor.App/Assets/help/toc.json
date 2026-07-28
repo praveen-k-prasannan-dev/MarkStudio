@@ -1,0 +1,91 @@
+[
+  {
+    "title": "Getting Started",
+    "children": [
+      { "title": "Welcome to MarkStudio Editor", "file": "getting-started/welcome.md" },
+      { "title": "Opening, Creating, and Saving Documents", "file": "getting-started/opening-saving.md" },
+      { "title": "Multiple Documents (Tabs)", "file": "getting-started/tabs.md" },
+      { "title": "Autosave & Crash Recovery", "file": "getting-started/autosave.md" }
+    ]
+  },
+  {
+    "title": "Home Tab",
+    "children": [
+      { "title": "Clipboard", "file": "ribbon/home-clipboard.md" },
+      { "title": "Font", "file": "ribbon/home-font.md" },
+      { "title": "Paragraph", "file": "ribbon/home-paragraph.md" },
+      { "title": "Editing", "file": "ribbon/home-editing.md" }
+    ]
+  },
+  {
+    "title": "Insert Tab",
+    "children": [
+      { "title": "Tables", "file": "ribbon/insert-tables.md" },
+      { "title": "Links & Images", "file": "ribbon/insert-links-images.md" },
+      { "title": "Blocks", "file": "ribbon/insert-blocks.md" },
+      { "title": "Symbols", "file": "ribbon/insert-symbols.md" }
+    ]
+  },
+  { "title": "The Table Tab", "file": "ribbon/table-tab.md" },
+  {
+    "title": "View Tab",
+    "children": [
+      { "title": "Layout & Preview", "file": "ribbon/view-layout.md" },
+      { "title": "Panels (Outline & Workspace)", "file": "ribbon/view-panels.md" },
+      { "title": "Focus Mode", "file": "ribbon/focus-mode.md" },
+      { "title": "Writing Stats", "file": "ribbon/writing-stats.md" }
+    ]
+  },
+  { "title": "Export Tab", "file": "ribbon/export.md" },
+  { "title": "Right-Click Context Menu", "file": "context-menu.md" },
+  { "title": "Spell Checking", "file": "spell-checking.md" },
+  { "title": "Command Palette", "file": "command-palette.md" },
+  { "title": "Templates & Snippets", "file": "templates-snippets.md" },
+  { "title": "Workspace Mode", "file": "workspace-mode.md" },
+  { "title": "Keyboard Shortcuts", "file": "shortcuts.md" },
+  { "title": "Tips & Troubleshooting", "file": "troubleshooting.md" },
+  {
+    "title": "Markdown Syntax Reference",
+    "children": [
+      { "title": "Headings", "file": "markdown-reference/headings.md" },
+      { "title": "Emphasis (Bold, Italic, Strikethrough, Highlight)", "file": "markdown-reference/emphasis.md" },
+      { "title": "Lists", "file": "markdown-reference/lists.md" },
+      { "title": "Links & Images", "file": "markdown-reference/links-images.md" },
+      { "title": "Tables", "file": "markdown-reference/tables.md" },
+      { "title": "Code (Inline & Fenced)", "file": "markdown-reference/code.md" },
+      { "title": "Blockquotes", "file": "markdown-reference/blockquotes.md" },
+      { "title": "Horizontal Rules", "file": "markdown-reference/horizontal-rules.md" },
+      { "title": "Footnotes", "file": "markdown-reference/footnotes.md" }
+    ]
+  },
+  {
+    "title": "Mermaid Diagrams",
+    "children": [
+      { "title": "Overview", "file": "mermaid/overview.md" },
+      { "title": "Flowcharts", "file": "mermaid/flowchart.md" },
+      { "title": "Sequence Diagrams", "file": "mermaid/sequence.md" },
+      { "title": "Class Diagrams", "file": "mermaid/class.md" },
+      { "title": "State Diagrams", "file": "mermaid/state.md" },
+      { "title": "Entity-Relationship Diagrams", "file": "mermaid/er.md" },
+      { "title": "Gantt Charts", "file": "mermaid/gantt.md" },
+      { "title": "Pie Charts", "file": "mermaid/pie.md" },
+      { "title": "User Journey Diagrams", "file": "mermaid/journey.md" },
+      { "title": "Git Graphs", "file": "mermaid/gitgraph.md" },
+      { "title": "Mindmaps", "file": "mermaid/mindmap.md" },
+      { "title": "Timelines", "file": "mermaid/timeline.md" },
+      { "title": "Other Diagram Types", "file": "mermaid/other-diagrams.md" }
+    ]
+  },
+  {
+    "title": "Math Formulas",
+    "children": [
+      { "title": "Overview", "file": "math/overview.md" },
+      { "title": "Basics (Arithmetic, Fractions, Exponents, Roots)", "file": "math/basics.md" },
+      { "title": "Greek Letters & Named Functions", "file": "math/greek-functions.md" },
+      { "title": "Sums, Products, Integrals & Limits", "file": "math/calculus.md" },
+      { "title": "Matrices & Vectors", "file": "math/matrices.md" },
+      { "title": "Sets, Logic & Relations", "file": "math/sets-logic.md" },
+      { "title": "Cheat Sheet", "file": "math/cheat-sheet.md" }
+    ]
+  }
+]

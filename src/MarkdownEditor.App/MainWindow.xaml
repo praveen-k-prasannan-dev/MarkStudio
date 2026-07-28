@@ -70,6 +70,7 @@
         <CommandBinding Command="{x:Static local:EditorCommands.FindPrevious}" Executed="FindPrevious_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.CommandPalette}" Executed="OpenCommandPalette_Executed" />
         <CommandBinding Command="{x:Static local:EditorCommands.ToggleFocusMode}" Executed="ToggleFocusMode_Executed" />
+        <CommandBinding Command="Help" Executed="OpenHelp_Executed" />
     </Window.CommandBindings>
 
     <Window.InputBindings>
@@ -103,6 +104,8 @@
                 <MenuItem Header="E_xit" Click="Exit_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
+                <MenuItem Header="MarkStudio Editor _Help" Click="OpenHelp_Click" InputGestureText="F1" />
+                <Separator />
                 <MenuItem Header="_About Markdown Editor" Click="About_Click" />
             </MenuItem>
         </Menu>

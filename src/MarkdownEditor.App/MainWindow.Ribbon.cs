@@ -70,6 +70,11 @@ public partial class MainWindow
                 OpenCommandPalette();
                 e.Handled = true;
             }
+            else if (e.Key == Key.F1)
+            {
+                OpenHelp();
+                e.Handled = true;
+            }
         };
     }
 

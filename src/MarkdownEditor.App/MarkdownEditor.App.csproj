@@ -37,6 +37,9 @@
     <Content Include="Assets\dictionaries\**\*.dic;Assets\dictionaries\**\*.aff">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\help\**\*.md;Assets\help\**\*.json;Assets\help\**\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Assets\app.ico" />
     <Resource Include="Assets\splash-icon.png" />
   </ItemGroup>

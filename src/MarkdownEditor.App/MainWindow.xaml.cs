@@ -17,7 +17,7 @@ public partial class MainWindow : Window
     private const string FileDialogFilter =
         "Markdown files (*.md;*.markdown)|*.md;*.markdown|Text files (*.txt)|*.txt|All files (*.*)|*.*";
     private const string PreviewHost = "preview.local";
-    private const string AssetsHost = "app-assets.local";
+    private const string AssetsHost = Services.PreviewScripts.AssetsHost;
 
     private readonly MainViewModel _vm = new();
     private readonly MarkdownRenderer _renderer = new();
@@ -159,30 +159,9 @@ public partial class MainWindow : Window
 
         string? baseHref = MapDocumentFolder();
         string body = _renderer.ToHtml(text);
-        string extraHead = BuildExtraHeadScripts(body);
+        string extraHead = Services.PreviewScripts.BuildExtraHeadScripts(body);
         string page = HtmlDocumentBuilder.BuildPage(body, _css, _vm.DocumentTitle, baseHref, extraHead);
         Preview.NavigateToString(page);
-    }
-
-    /// <summary>
-    /// Loads Mermaid/MathJax only when the document actually uses them - both are multi-megabyte
-    /// scripts, and re-loading them on every keystroke's preview refresh would make typing feel
-    /// sluggish for documents that never reference diagrams or math.
-    /// </summary>
-    private static string BuildExtraHeadScripts(string bodyHtml)
-    {
-        var scripts = new System.Text.StringBuilder();
-
-        if (bodyHtml.Contains("class=\"mermaid\"", StringComparison.Ordinal))
-        {
-            scripts.Append($"<script src=\"https://{AssetsHost}/lib/mermaid.min.js\"></script>");
-            scripts.Append("<script>mermaid.initialize({ startOnLoad: true, securityLevel: 'strict' });</script>");
-        }
-
-        if (bodyHtml.Contains("class=\"math\"", StringComparison.Ordinal))
-            scripts.Append($"<script src=\"https://{AssetsHost}/lib/mathjax-tex-svg.js\"></script>");
-
-        return scripts.ToString();
     }
 
     /// <summary>Maps the document's folder to a virtual host so relative image paths resolve.</summary>
