@@ -18,6 +18,7 @@ public partial class HelpWindow : Window
     private readonly bool _darkTheme;
     private IReadOnlyList<HelpTopic> _toc = [];
     private readonly MarkdownRenderer _renderer = new();
+    private readonly Dictionary<string, string> _contentCache = [];
     private bool _webViewReady;
 
     public HelpWindow(bool darkTheme)
@@ -64,7 +65,21 @@ public partial class HelpWindow : Window
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         string query = SearchBox.Text;
-        Tree.ItemsSource = string.IsNullOrWhiteSpace(query) ? _toc : HelpSearch.Search(_toc, query);
+        Tree.ItemsSource = string.IsNullOrWhiteSpace(query) ? _toc : HelpSearch.SearchWithContent(_toc, query, GetTopicContent);
+    }
+
+    /// <summary>Reads (and caches) a topic's raw Markdown source, so search can match words inside the content, not just the title.</summary>
+    private string GetTopicContent(HelpTopic topic)
+    {
+        if (topic.File is null)
+            return "";
+        if (_contentCache.TryGetValue(topic.File, out string? cached))
+            return cached;
+
+        string path = Path.Combine(HelpRoot, topic.File.Replace('/', Path.DirectorySeparatorChar));
+        string content = File.Exists(path) ? File.ReadAllText(path) : "";
+        _contentCache[topic.File] = content;
+        return content;
     }
 
     private void Tree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

@@ -69,4 +69,68 @@ public class HelpSearchTests
 
         Assert.Empty(results);
     }
+
+    private static readonly Dictionary<string, string> SampleContent = new()
+    {
+        ["home/font.md"] = "Bold and italic toggle like Word.",
+        ["home/paragraph.md"] = "Headings, bullet lists, and numbered lists.",
+        ["mermaid/flowchart.md"] = "Insert a row above or below is not mentioned here.",
+        ["mermaid/sequence.md"] = "Participants and messages between them.",
+    };
+
+    private static string GetSampleContent(HelpTopic topic) => SampleContent[topic.File!];
+
+    [Fact]
+    public void SearchWithContent_finds_topics_whose_title_does_not_match_but_body_does()
+    {
+        var results = HelpSearch.SearchWithContent(SampleToc(), "insert a row", GetSampleContent);
+
+        Assert.Contains(results, t => t.Title == "Flowcharts");
+    }
+
+    [Fact]
+    public void SearchWithContent_ranks_title_matches_before_content_only_matches()
+    {
+        var toc = new[]
+        {
+            new HelpTopic { Title = "Lists", File = "a.md" },
+            new HelpTopic { Title = "Something Else", File = "b.md" },
+        };
+        var content = new Dictionary<string, string>
+        {
+            ["a.md"] = "no relevant body text",
+            ["b.md"] = "this topic mentions lists in its body",
+        };
+
+        var results = HelpSearch.SearchWithContent(toc, "lists", t => content[t.File!]);
+
+        Assert.Equal(["Lists", "Something Else"], results.Select(t => t.Title));
+    }
+
+    [Fact]
+    public void SearchWithContent_content_match_is_case_insensitive()
+    {
+        var results = HelpSearch.SearchWithContent(SampleToc(), "PARTICIPANTS", GetSampleContent);
+
+        Assert.Contains(results, t => t.Title == "Sequence Diagrams");
+    }
+
+    [Fact]
+    public void SearchWithContent_with_empty_query_returns_all_leaf_topics()
+    {
+        var results = HelpSearch.SearchWithContent(SampleToc(), "", GetSampleContent);
+
+        Assert.Equal(4, results.Count);
+    }
+
+    [Fact]
+    public void SearchWithContent_does_not_duplicate_a_topic_that_matches_both_title_and_content()
+    {
+        var toc = new[] { new HelpTopic { Title = "Flowcharts", File = "a.md" } };
+        var content = new Dictionary<string, string> { ["a.md"] = "flowcharts are diagrams" };
+
+        var results = HelpSearch.SearchWithContent(toc, "flow", t => content[t.File!]);
+
+        Assert.Single(results);
+    }
 }

@@ -25,4 +25,31 @@ public static class HelpSearch
 
     public static IReadOnlyList<HelpTopic> Search(IReadOnlyList<HelpTopic> topics, string query) =>
         FuzzyMatcher.Filter(Flatten(topics), t => t.Title, query);
+
+    /// <summary>
+    /// Title matches (fuzzy, ranked, same as <see cref="Search"/>) first, then topics whose body
+    /// text contains the query as a plain substring - so searching a word that appears in a
+    /// topic's content but not its title (e.g. "row" for "The Table Tab") still finds it.
+    /// </summary>
+    public static IReadOnlyList<HelpTopic> SearchWithContent(
+        IReadOnlyList<HelpTopic> topics, string query, Func<HelpTopic, string> getContent)
+    {
+        ArgumentNullException.ThrowIfNull(topics);
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(getContent);
+
+        var flat = Flatten(topics);
+        if (query.Length == 0)
+            return flat;
+
+        var titleMatches = FuzzyMatcher.Filter(flat, t => t.Title, query);
+        var titleMatchSet = new HashSet<HelpTopic>(titleMatches);
+
+        var contentMatches = flat
+            .Where(t => !titleMatchSet.Contains(t))
+            .Where(t => getContent(t).Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        return [.. titleMatches, .. contentMatches];
+    }
 }
